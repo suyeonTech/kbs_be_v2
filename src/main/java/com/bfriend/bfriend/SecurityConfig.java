@@ -14,17 +14,18 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests
-                                .requestMatchers(new AntPathRequestMatcher("/h2-consoleb/**")).permitAll()
-                                .anyRequest().authenticated() // Requires authentication for other requests
+                                authorizeHttpRequests
+                                        .anyRequest().permitAll()
+                        //.requestMatchers(new AntPathRequestMatcher("/h2-consoleb/**")).permitAll()
+                        //.anyRequest().authenticated() // Requires authentication for other requests
                 )
-                .csrf().disable() // Disable CSRF protection for H2 console (optional)
-                .headers().frameOptions().disable(); // Allow frames for H2 console
+                .csrf((csrfConfig) ->
+                        csrfConfig.disable()) // Disable CSRF protection for H2 console (optional)
+                .headers((headerConfig) ->
+                        headerConfig.frameOptions(frameOptionsConfig ->
+                                frameOptionsConfig.disable()
+                        )); // Allow frames for H2 console
+
         return http.build();
     }
-
-
-
-
-
 }
