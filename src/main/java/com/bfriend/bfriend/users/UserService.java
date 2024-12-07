@@ -7,15 +7,17 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UsersRepository usersRepository;
+    private final MailService mailService;
 
-    public UserService(UsersRepository usersRepository) {
+    public UserService(UsersRepository usersRepository, MailService mailService) {
         this.usersRepository = usersRepository;
+        this.mailService = mailService;
     }
 
     public String checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
                 .orElseThrow(IllegalArgumentException::new);
 
-        return "success";
+        return mailService.sendMail(users.getEmail());
     }
 }
