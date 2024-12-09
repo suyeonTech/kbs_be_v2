@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +20,9 @@ public class UserService {
                 .orElseThrow(IllegalArgumentException::new);
 
         return mailService.sendMail(users.getEmail());
+    }
+
+    public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        return mailService.checkAuthenticationNumber(request);
     }
 }

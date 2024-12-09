@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class MailAuthenticationNumberService {
+
+    private static final String EMAIL_AUTHENTICATION_NUMBER_NAMESPACE = "email_authentication:";
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -27,7 +30,23 @@ public class MailAuthenticationNumberService {
     }
 
     public void saveAuthenticationNumberToRedis(String email, String authenticationNumber) {
-        redisTemplate.opsForValue().set("email_authentication:"+email, authenticationNumber,
+        redisTemplate.opsForValue().set(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE + email, authenticationNumber,
                 emailAuthenticationNumberTTL, TimeUnit.SECONDS);
+    }
+
+    public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        String authenticationNumber = (String) redisTemplate.opsForValue().get(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE + request.getEmail());
+
+        if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
+            throw new IllegalArgumentException();
+        }
+
+        deleteEmailAndAuthenticationNumber(request.getEmail());
+
+        return "success";
+    }
+
+    public void deleteEmailAndAuthenticationNumber(String verifiedEmail) {
+        redisTemplate.delete(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE+verifiedEmail);
     }
 }

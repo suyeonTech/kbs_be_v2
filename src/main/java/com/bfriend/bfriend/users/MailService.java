@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -39,5 +40,9 @@ public class MailService {
         mailAuthenticationNumberService.saveAuthenticationNumberToRedis(email, authenticationNumber);
 
         return "success";
+    }
+
+    public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        return mailAuthenticationNumberService.checkAuthenticationNumber(request);
     }
 }
