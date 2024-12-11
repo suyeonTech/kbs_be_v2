@@ -14,7 +14,7 @@ public class UsersController {
     }
 
     @PostMapping("/users/changepw")
-    public void changePassword(@RequestBody ChangePasswordRequest request) {
-        userService.changePassword(request);
+    public String changePassword(@RequestBody ChangePasswordRequest request) {
+        return userService.changePassword(request);
     }
 }

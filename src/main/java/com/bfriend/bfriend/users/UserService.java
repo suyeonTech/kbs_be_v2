@@ -1,6 +1,7 @@
 package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -10,10 +11,24 @@ public class UserService {
     private static final int PASSWORD_MAX_LENGTH = 20;
     private static final String PASSWORD_REGEX = "^(?=.*[a-zA-Z])(?=.*[~!@#$%^&*+=()_-])(?=.*[0-9]).+$";
 
-    public void changePassword(ChangePasswordRequest request) {
+    private final PasswordEncoder passwordEncoder;
+    private final UsersRepository usersRepository;
+
+    public UserService(PasswordEncoder passwordEncoder, UsersRepository usersRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.usersRepository = usersRepository;
+    }
+
+    public String changePassword(ChangePasswordRequest request) {
         if (!isValidPasswordFormat(request.getNewPassword())) {
             throw new IllegalArgumentException();
         }
+
+        String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
+
+        saveHashedNewPassword(request.getEmail(), hashedNewPassword);
+
+        return "success";
     }
 
     public boolean isValidPasswordFormat(String newPassword) {
@@ -32,5 +47,16 @@ public class UserService {
         }
 
         return true;
+    }
+
+    public void saveHashedNewPassword(String email, String hashedNewPassword) {
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(IllegalArgumentException::new);
+
+        Users updatePasswordUsers = users.toBuilder()
+                .password(hashedNewPassword)
+                .build();
+
+        usersRepository.save(updatePasswordUsers);
     }
 }
