@@ -9,10 +9,6 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    private static final int PASSWORD_MIN_LENGTH = 8;
-    private static final int PASSWORD_MAX_LENGTH = 20;
-    private static final String PASSWORD_REGEX = "^(?=.*[a-zA-Z])(?=.*[~!@#$%^&*+=()_-])(?=.*[0-9]).+$";
-
     private final PasswordEncoder passwordEncoder;
     private final UsersRepository usersRepository;
 
@@ -29,17 +25,21 @@ public class UserService {
     }
 
     public boolean isValidPasswordFormat(String newPassword) {
+        int passwordMinLength = (int)PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
+        int passwordMaxLength = (int) PasswordCheckConstant.PASSWORD_MAX_LENGTH.getValue();
+        String passwordRegex = (String) PasswordCheckConstant.PASSWORD_REGEX.getValue();
+
         // 공백이 포함된 비밀번호 검사
         String temp = StringUtils.trimAllWhitespace(newPassword);
         if (newPassword.length() != temp.length()) {
             return false;
         }
 
-        if (newPassword.length() < PASSWORD_MIN_LENGTH || newPassword.length() > PASSWORD_MAX_LENGTH) {
+        if (newPassword.length() < passwordMinLength || newPassword.length() > passwordMaxLength) {
             return false;
         }
 
-        if (!newPassword.matches(PASSWORD_REGEX)) {
+        if (!newPassword.matches(passwordRegex)) {
             return false;
         }
 
