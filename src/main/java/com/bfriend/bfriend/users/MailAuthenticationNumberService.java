@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Service
 public class MailAuthenticationNumberService {
-
-    private static final String EMAIL_AUTHENTICATION_NUMBER_NAMESPACE = "email_authentication:";
+    String emailAuthenticationNumberNamespace = (String) MailAuthenticationConstants.EMAIL_AUTHENTICATION_NUMBER_NAMESPACE.getValue();
 
     private final RedisTemplate<String, Object> redisTemplate;
 
@@ -21,19 +20,22 @@ public class MailAuthenticationNumberService {
     private long emailAuthenticationNumberTTL;
 
     public String create() {
+        int minAuthenticationNumber = (int) MailAuthenticationConstants.MIN_AUTHENTICATION_NUMBER.getValue();
+        int rangeRandomAuthenticationNumber = (int) MailAuthenticationConstants.RANGE_RANDOM_AUTHENTICATION_NUMBER.getValue();
+
         SecureRandom secureRandom = new SecureRandom();
-        int authenticationNumber = 100000 + secureRandom.nextInt(900000);
+        int authenticationNumber = minAuthenticationNumber + secureRandom.nextInt(rangeRandomAuthenticationNumber);
 
         return String.valueOf(authenticationNumber);
     }
 
     public void saveToRedis(String email, String authenticationNumber) {
-        redisTemplate.opsForValue().set(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE + email, authenticationNumber,
+        redisTemplate.opsForValue().set(emailAuthenticationNumberNamespace + email, authenticationNumber,
                 emailAuthenticationNumberTTL, TimeUnit.SECONDS);
     }
 
     public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
-        String authenticationNumber = (String) redisTemplate.opsForValue().get(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE + request.getEmail());
+        String authenticationNumber = (String) redisTemplate.opsForValue().get(emailAuthenticationNumberNamespace + request.getEmail());
 
         if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
             throw new IllegalArgumentException();
@@ -45,6 +47,6 @@ public class MailAuthenticationNumberService {
     }
 
     public void deleteToRedis(String verifiedEmail) {
-        redisTemplate.delete(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE+verifiedEmail);
+        redisTemplate.delete(emailAuthenticationNumberNamespace + verifiedEmail);
     }
 }
