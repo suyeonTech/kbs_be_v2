@@ -3,19 +3,16 @@ package com.bfriend.bfriend.users;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class MailService {
     private final JavaMailSender javaMailSender;
     private final MailAuthenticationNumberService mailAuthenticationNumberService;
-
-    public MailService(JavaMailSender javaMailSender, MailAuthenticationNumberService mailAuthenticationNumberService) {
-        this.javaMailSender = javaMailSender;
-        this.mailAuthenticationNumberService = mailAuthenticationNumberService;
-    }
 
     public MimeMessage createMail(String email, String authenticationNumber) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -33,11 +30,11 @@ public class MailService {
     }
 
     public String sendMail(String email) {
-        String authenticationNumber = mailAuthenticationNumberService.createAuthenticationNumber();
+        String authenticationNumber = mailAuthenticationNumberService.create();
         MimeMessage mimeMessage = createMail(email, authenticationNumber);
 
         javaMailSender.send(mimeMessage);
-        mailAuthenticationNumberService.saveAuthenticationNumberToRedis(email, authenticationNumber);
+        mailAuthenticationNumberService.saveToRedis(email, authenticationNumber);
 
         return "success";
     }

@@ -1,6 +1,7 @@
 package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
+@RequiredArgsConstructor
 @Service
 public class MailAuthenticationNumberService {
 
@@ -18,18 +20,14 @@ public class MailAuthenticationNumberService {
     @Value("${redis.email_authentication_number_ttl}")
     private long emailAuthenticationNumberTTL;
 
-    public MailAuthenticationNumberService(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
-    public String createAuthenticationNumber() {
+    public String create() {
         SecureRandom secureRandom = new SecureRandom();
         int authenticationNumber = 100000 + secureRandom.nextInt(900000);
 
         return String.valueOf(authenticationNumber);
     }
 
-    public void saveAuthenticationNumberToRedis(String email, String authenticationNumber) {
+    public void saveToRedis(String email, String authenticationNumber) {
         redisTemplate.opsForValue().set(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE + email, authenticationNumber,
                 emailAuthenticationNumberTTL, TimeUnit.SECONDS);
     }
@@ -41,12 +39,12 @@ public class MailAuthenticationNumberService {
             throw new IllegalArgumentException();
         }
 
-        deleteEmailAndAuthenticationNumber(request.getEmail());
+        deleteToRedis(request.getEmail());
 
         return "success";
     }
 
-    public void deleteEmailAndAuthenticationNumber(String verifiedEmail) {
+    public void deleteToRedis(String verifiedEmail) {
         redisTemplate.delete(EMAIL_AUTHENTICATION_NUMBER_NAMESPACE+verifiedEmail);
     }
 }
