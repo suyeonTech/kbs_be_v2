@@ -1,10 +1,12 @@
 package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+@RequiredArgsConstructor
 @Service
 public class UserService {
     private static final int PASSWORD_MIN_LENGTH = 8;
@@ -13,11 +15,6 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UsersRepository usersRepository;
-
-    public UserService(PasswordEncoder passwordEncoder, UsersRepository usersRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.usersRepository = usersRepository;
-    }
 
     public String changePassword(ChangePasswordRequest request) {
         if (!isValidPasswordFormat(request.getNewPassword())) {
