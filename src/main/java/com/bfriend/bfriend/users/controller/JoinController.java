@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.users.controller;
 
-import com.bfriend.bfriend.users.dto.JoinDTO;
+import com.bfriend.bfriend.users.dto.request.JoinDTO;
 import com.bfriend.bfriend.users.service.JoinService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

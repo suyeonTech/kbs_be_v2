@@ -1,11 +1,13 @@
-package com.bfriend.bfriend.users.dto;
+package com.bfriend.bfriend.users.dto.request;
 
 import com.bfriend.bfriend.utils.enums.Gender;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+//import lombok.Setter;
 
-@Setter
+//@Setter
 @Getter
+@Builder
 public class JoinDTO {
 
     private String nickname;
