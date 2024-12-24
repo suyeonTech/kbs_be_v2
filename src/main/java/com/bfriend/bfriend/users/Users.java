@@ -1,12 +1,15 @@
 package com.bfriend.bfriend.users;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
+@Builder
+@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Users {
 
 

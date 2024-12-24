@@ -1,13 +1,19 @@
 package com.bfriend.bfriend.room;
 
+import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.users.Users;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
+@Data
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Room {
 
     @Id
@@ -33,4 +39,7 @@ public class Room {
     private Integer maxPtc;
 
     private Integer joinPtc;
+
+
+
 }
