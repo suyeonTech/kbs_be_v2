@@ -1,4 +1,6 @@
 package com.bfriend.bfriend.friendlist;
 
-public interface FriendListRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface FriendListRepository extends JpaRepository<FriendList, Long> {
 }
