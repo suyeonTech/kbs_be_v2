@@ -15,8 +15,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
-                                .requestMatchers(new AntPathRequestMatcher("/h2-consoleb/**")).permitAll()
-                                .anyRequest().authenticated() // Requires authentication for other requests
+                                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                                .anyRequest().permitAll() // Requires authentication for other requests
                 )
                 .csrf().disable() // Disable CSRF protection for H2 console (optional)
                 .headers().frameOptions().disable(); // Allow frames for H2 console

@@ -10,5 +10,5 @@ public class RoomDeleteDTO {
 
     private Users uid; //방장인지 확인
 
-    private Integer rid; //선택된 모임방
+    private Long rid; //선택된 모임방
 }
