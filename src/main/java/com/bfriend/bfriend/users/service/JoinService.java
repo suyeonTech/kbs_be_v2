@@ -1,9 +1,12 @@
 package com.bfriend.bfriend.users.service;
 
-import com.bfriend.bfriend.users.dto.request.JoinDTO;
+import com.bfriend.bfriend.users.dto.request.RequestJoinDTO;
+import com.bfriend.bfriend.users.dto.response.ResponseJoinDTO;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,29 +17,41 @@ public class JoinService {
     private final UsersRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public String joinProcess(JoinDTO joinDTO) {
+    public ResponseEntity<?> joinProcess(RequestJoinDTO requestJoinDTO) {
 
-        if (isDuplicateUser(joinDTO.getNickname(), joinDTO.getEmail())) {
-            return "이미 존재하는 유저입니다.";
+        if (isDuplicateUser(requestJoinDTO.getPassword(), requestJoinDTO.getEmail())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(new ResponseJoinDTO("다른 이메일 혹은 패스워드를 사용해주세요.", false));
         }
 
-        Users users = buildUsers(joinDTO);
+        Users users = buildUsers(requestJoinDTO);
         userRepository.save(users);
 
-        return "회원가입이 완료되었습니다.";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseJoinDTO("회원가입이 완료되었습니다.", true));
     }
 
-    private boolean isDuplicateUser(String nickname, String email) {
-        return userRepository.findByNickname(nickname).isPresent() || userRepository.findByEmail(email).isPresent();
+    private boolean isDuplicateUser(String password, String email) {
+        boolean isEmailOrEmailDuplicate = userRepository.findByEmail(email).isPresent() ||
+                userRepository.findByEmail(email).isPresent();
+
+        boolean isPasswordDuplicate = userRepository.findAll()
+                .stream()
+                .anyMatch(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
+
+        return isEmailOrEmailDuplicate || isPasswordDuplicate;
     }
 
-    private Users buildUsers(JoinDTO joinDTO) {
+    private Users buildUsers(RequestJoinDTO requestJoinDTO) {
         return Users.builder()
-                .nickname(joinDTO.getNickname())
-                .password(bCryptPasswordEncoder.encode(joinDTO.getPassword()))
-                .gender(joinDTO.getGender())
-                .age(joinDTO.getAge())
-                .email(joinDTO.getEmail())
+                .nickname(requestJoinDTO.getNickname())
+                .password(bCryptPasswordEncoder.encode(requestJoinDTO.getPassword()))
+                .gender(requestJoinDTO.getGender())
+                .age(requestJoinDTO.getAge())
+                .email(requestJoinDTO.getEmail())
+                .role("ROLE_USER")
                 .isReported(false)
                 .isStopped(false)
                 .build();
