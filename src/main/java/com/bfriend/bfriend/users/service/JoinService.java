@@ -9,6 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +24,16 @@ public class JoinService {
 
     public ResponseEntity<?> joinProcess(RequestJoinDTO requestJoinDTO) {
 
-        if (isDuplicateUser(requestJoinDTO.getPassword(), requestJoinDTO.getEmail())) {
+        if (userRepository.findByEmail(requestJoinDTO.getEmail()).isPresent()) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body(new ResponseJoinDTO("다른 이메일 혹은 패스워드를 사용해주세요.", false));
+                    .body(new ResponseJoinDTO("이미 사용 중인 이메일입니다.", false));
+        }
+
+        if (isPasswordDuplicate(requestJoinDTO.getPassword())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(new ResponseJoinDTO("이미 사용 중인 비밀번호입니다. 다른 비밀번호를 사용해주세요.", false));
         }
 
         Users users = buildUsers(requestJoinDTO);
@@ -33,15 +44,24 @@ public class JoinService {
                 .body(new ResponseJoinDTO("회원가입이 완료되었습니다.", true));
     }
 
-    private boolean isDuplicateUser(String password, String email) {
-        boolean isEmailOrEmailDuplicate = userRepository.findByEmail(email).isPresent() ||
-                userRepository.findByEmail(email).isPresent();
+    public Map<String, String> validateHandling(Errors errors) {
+        Map<String, String> validatorResult = new HashMap<>();
 
-        boolean isPasswordDuplicate = userRepository.findAll()
+        // 모든 유효성 검증 실패 항목을 처리
+        for (FieldError error : errors.getFieldErrors()) {
+            String key = "valid_" + error.getField(); // 예: valid_email
+            String message = error.getDefaultMessage(); // DTO에 정의된 메시지
+            validatorResult.put(key, message);
+        }
+
+        return validatorResult;
+    }
+
+
+    private boolean isPasswordDuplicate(String password) {
+        return userRepository.findAll()
                 .stream()
                 .anyMatch(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
-
-        return isEmailOrEmailDuplicate || isPasswordDuplicate;
     }
 
     private Users buildUsers(RequestJoinDTO requestJoinDTO) {
