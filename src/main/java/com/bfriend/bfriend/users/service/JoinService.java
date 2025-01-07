@@ -30,11 +30,11 @@ public class JoinService {
                     .body(new ResponseJoinDTO("이미 사용 중인 이메일입니다.", false));
         }
 
-        if (isPasswordDuplicate(requestJoinDTO.getPassword())) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(new ResponseJoinDTO("이미 사용 중인 비밀번호입니다. 다른 비밀번호를 사용해주세요.", false));
-        }
+//        if (isPasswordDuplicate(requestJoinDTO.getPassword())) {
+//            return ResponseEntity
+//                    .status(HttpStatus.CONFLICT)
+//                    .body(new ResponseJoinDTO("이미 사용 중인 비밀번호입니다. 다른 비밀번호를 사용해주세요.", false));
+//        }
 
         Users users = buildUsers(requestJoinDTO);
         userRepository.save(users);
@@ -49,8 +49,8 @@ public class JoinService {
 
         // 모든 유효성 검증 실패 항목을 처리
         for (FieldError error : errors.getFieldErrors()) {
-            String key = "valid_" + error.getField(); // 예: valid_email
-            String message = error.getDefaultMessage(); // DTO에 정의된 메시지
+            String key = "valid_" + error.getField();
+            String message = error.getDefaultMessage();
             validatorResult.put(key, message);
         }
 
@@ -58,11 +58,11 @@ public class JoinService {
     }
 
 
-    private boolean isPasswordDuplicate(String password) {
-        return userRepository.findAll()
-                .stream()
-                .anyMatch(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
-    }
+//    private boolean isPasswordDuplicate(String password) {
+//        return userRepository.findAll()
+//                .stream()
+//                .anyMatch(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
+//    }
 
     private Users buildUsers(RequestJoinDTO requestJoinDTO) {
         return Users.builder()
