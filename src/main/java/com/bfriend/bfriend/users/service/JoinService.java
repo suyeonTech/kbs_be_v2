@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users.service;
 
+import com.bfriend.bfriend.jwt.JWTUtil;
 import com.bfriend.bfriend.users.dto.request.RequestJoinDTO;
 import com.bfriend.bfriend.users.dto.response.ResponseJoinDTO;
 import com.bfriend.bfriend.users.entity.Users;
@@ -21,6 +22,7 @@ public class JoinService {
 
     private final UsersRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JWTUtil jwtUtil;
 
     public ResponseEntity<?> joinProcess(RequestJoinDTO requestJoinDTO) {
 
@@ -39,8 +41,12 @@ public class JoinService {
         Users users = buildUsers(requestJoinDTO);
         userRepository.save(users);
 
+        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), 1000L * 60 * 60 * 24); // 24시간 유효한 토큰
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .header("Authorization", "Bearer " + token)
+                .header("Location", "/main") // 리다이렉트 경로 설정
                 .body(new ResponseJoinDTO("회원가입이 완료되었습니다.", true));
     }
 
@@ -56,7 +62,6 @@ public class JoinService {
 
         return validatorResult;
     }
-
 
 //    private boolean isPasswordDuplicate(String password) {
 //        return userRepository.findAll()

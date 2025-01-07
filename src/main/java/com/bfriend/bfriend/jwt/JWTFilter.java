@@ -34,7 +34,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String token = authorization.split(" ")[1];
 
-        if (jwtUtil.isExpired(token)) { // 토큰이 만료된 상태인 경우
+        // 토큰이 만료된 상태인 경우
+        if (jwtUtil.isExpired(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Token expired\"}");
@@ -45,7 +46,8 @@ public class JWTFilter extends OncePerRequestFilter {
         String tokenEmail  = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        String requestEmail = request.getParameter("email"); // 요청에서 이메일 추출
+        // 요청에서 이메일 추출
+        String requestEmail = request.getParameter("email");
         System.out.println("tokenEmail: " + tokenEmail);
         System.out.println("requestEmail: " + requestEmail);
 
