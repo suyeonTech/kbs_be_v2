@@ -1,7 +1,7 @@
-package com.bfriend.bfriend.jwt;
+package com.bfriend.bfriend.security;
 
-import com.bfriend.bfriend.users.dto.response.CustomUserDetails;
 import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.utils.constants.JWTConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +25,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         //Authorization 헤더 검증
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+        if (authorization == null || !authorization.startsWith(JWTConstants.TOKEN_PREFIX)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Authorization header missing or invalid\"}");

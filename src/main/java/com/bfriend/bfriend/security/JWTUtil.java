@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.jwt;
+package com.bfriend.bfriend.security;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;

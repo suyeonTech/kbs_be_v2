@@ -1,10 +1,11 @@
 package com.bfriend.bfriend.users.service;
 
-import com.bfriend.bfriend.jwt.JWTUtil;
+import com.bfriend.bfriend.security.JWTUtil;
 import com.bfriend.bfriend.users.dto.request.RequestJoinDTO;
 import com.bfriend.bfriend.users.dto.response.ResponseJoinDTO;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.constants.JWTConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,20 +33,14 @@ public class JoinService {
                     .body(new ResponseJoinDTO("이미 사용 중인 이메일입니다.", false));
         }
 
-//        if (isPasswordDuplicate(requestJoinDTO.getPassword())) {
-//            return ResponseEntity
-//                    .status(HttpStatus.CONFLICT)
-//                    .body(new ResponseJoinDTO("이미 사용 중인 비밀번호입니다. 다른 비밀번호를 사용해주세요.", false));
-//        }
-
         Users users = buildUsers(requestJoinDTO);
         userRepository.save(users);
 
-        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), 1000L * 60 * 60 * 24); // 24시간 유효한 토큰
+        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR * 24); // 24시간 유효한 토큰
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header("Authorization", "Bearer " + token)
+                .header("Authorization", JWTConstants.TOKEN_PREFIX + token)
                 .header("Location", "/main") // 리다이렉트 경로 설정
                 .body(new ResponseJoinDTO("회원가입이 완료되었습니다.", true));
     }
@@ -62,12 +57,6 @@ public class JoinService {
 
         return validatorResult;
     }
-
-//    private boolean isPasswordDuplicate(String password) {
-//        return userRepository.findAll()
-//                .stream()
-//                .anyMatch(user -> bCryptPasswordEncoder.matches(password, user.getPassword()));
-//    }
 
     private Users buildUsers(RequestJoinDTO requestJoinDTO) {
         return Users.builder()

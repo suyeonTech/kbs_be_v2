@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.users.dto.response;
+package com.bfriend.bfriend.security;
 
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;

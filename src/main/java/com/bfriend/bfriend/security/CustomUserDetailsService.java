@@ -1,7 +1,6 @@
-package com.bfriend.bfriend.users.service;
+package com.bfriend.bfriend.security;
 
 
-import com.bfriend.bfriend.users.dto.response.CustomUserDetails;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;

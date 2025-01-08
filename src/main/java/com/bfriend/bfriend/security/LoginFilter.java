@@ -1,5 +1,5 @@
-package com.bfriend.bfriend.jwt;
-import com.bfriend.bfriend.users.dto.response.CustomUserDetails;
+package com.bfriend.bfriend.security;
+import com.bfriend.bfriend.utils.constants.JWTConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,9 +48,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(email, role, 1000L * 60 * 60); // 1시간 토큰
+        String token = jwtUtil.createJwt(email, role, JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR); // 1시간 토큰
 
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorization", JWTConstants.TOKEN_PREFIX + token);
     }
 
     @Override

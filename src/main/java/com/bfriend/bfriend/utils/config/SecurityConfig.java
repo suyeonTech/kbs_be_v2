@@ -1,8 +1,8 @@
 package com.bfriend.bfriend.utils.config;
 
-import com.bfriend.bfriend.jwt.JWTFilter;
-import com.bfriend.bfriend.jwt.JWTUtil;
-import com.bfriend.bfriend.jwt.LoginFilter;
+import com.bfriend.bfriend.security.JWTFilter;
+import com.bfriend.bfriend.security.JWTUtil;
+import com.bfriend.bfriend.security.LoginFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
