@@ -15,14 +15,14 @@ public class RoomController {
 
     //모임방 생성
     @PostMapping("/create")
-    public String CreateRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
+    public String createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
         Room room = roomService.create(roomCreateDTO);
         return "room_detail";
     }
 
     //모임방 삭제
     @PostMapping("/delete")
-    public String DeleteRoom(@RequestBody RoomDeleteDTO roomDeleteDTO) {
+    public String deleteRoom(@RequestBody RoomDeleteDTO roomDeleteDTO) {
         int roomDeleted = roomService.delete(roomDeleteDTO); //성공 시 roomDeleted=1, 실패시 0
         if (roomDeleted == 0) { //실패시 오류 페이지 반환
             return "error page";
