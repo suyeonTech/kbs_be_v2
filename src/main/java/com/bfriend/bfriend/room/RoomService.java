@@ -5,6 +5,8 @@ import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class RoomService {
@@ -38,6 +40,11 @@ public class RoomService {
             return 0;
         }
         return 1; //성공시
+    }
+
+    //검색 키워드로 검색결과를 찾아 리스트로 반환
+    public List<Room> searchRoom(String keyword) {
+        return roomRepository.findAllByKeyword(keyword);
     }
 
 

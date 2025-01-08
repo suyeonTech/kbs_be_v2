@@ -5,6 +5,8 @@ import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping(value = "/room")
 @RestController
@@ -27,6 +29,7 @@ public class RoomController {
         }
         return "room_page"; //성공시 모임촌 페이지 반환
     }
+
 
 
 }
