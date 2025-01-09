@@ -5,6 +5,8 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -33,17 +35,17 @@ public class MailService {
         return mimeMessage;
     }
 
-    public String sendMail(String email) {
+    public ResponseEntity<String> sendMail(String email) {
         String authenticationNumber = mailAuthenticationNumberService.create();
         MimeMessage mimeMessage = createMail(email, authenticationNumber);
 
         javaMailSender.send(mimeMessage);
         mailAuthenticationNumberService.saveToRedis(email, authenticationNumber);
 
-        return "success";
+        return ResponseEntity.ok("이메일 인증 번호 발송 성공");
     }
 
-    public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
         return mailAuthenticationNumberService.checkAuthenticationNumber(request);
     }
 }

@@ -4,6 +4,8 @@ import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -34,7 +36,7 @@ public class MailAuthenticationNumberService {
                 emailAuthenticationNumberTTL, TimeUnit.SECONDS);
     }
 
-    public String checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
         String authenticationNumber = (String) redisTemplate.opsForValue().get(emailAuthenticationNumberNamespace + request.getEmail());
 
         if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
@@ -43,7 +45,7 @@ public class MailAuthenticationNumberService {
 
         deleteToRedis(request.getEmail());
 
-        return "success";
+        return ResponseEntity.ok("이메일 인증 번호 인증 성공");
     }
 
     public void deleteToRedis(String verifiedEmail) {
