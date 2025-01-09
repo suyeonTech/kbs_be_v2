@@ -1,11 +1,12 @@
 package com.bfriend.bfriend.friendlist;
 
-import com.bfriend.bfriend.friendlist.dto.request.UserIdAndFriendIdRequest;
+import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import com.bfriend.bfriend.users.Users;
 import com.bfriend.bfriend.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @Service
@@ -14,17 +15,19 @@ public class FriendListService {
     private final UsersRepository usersRepository;
     private final FriendListRepository friendListRepository;
 
-    public void addFriend(UserIdAndFriendIdRequest request) {
-        Users addUid = usersRepository.findByUid(request.getUserId())
+    public ResponseEntity<String> addFriend(FriendAddRequest request) {
+        Users currentUserUid = usersRepository.findByUid(request.getUserId())
                 .orElseThrow();
-        Users addedUid = usersRepository.findByUid(request.getFriendId())
+        Users targetUserUid = usersRepository.findByUid(request.getFriendId())
                 .orElseThrow();
 
         FriendList addFriend = FriendList.builder()
-                .addUid(addUid)
-                .addedUid(addedUid).
+                .addUid(currentUserUid)
+                .addedUid(targetUserUid).
                 build();
 
         friendListRepository.save(addFriend);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("친구 추가 성공");
     }
 }

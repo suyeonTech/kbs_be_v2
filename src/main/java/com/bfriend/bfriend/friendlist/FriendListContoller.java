@@ -1,7 +1,8 @@
 package com.bfriend.bfriend.friendlist;
 
-import com.bfriend.bfriend.friendlist.dto.request.UserIdAndFriendIdRequest;
+import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ public class FriendListContoller {
     private final FriendListService friendListService;
 
     @PostMapping("/add")
-    public void addFriend(@RequestBody UserIdAndFriendIdRequest request) {
-        friendListService.addFriend(request);
+    public ResponseEntity<String> addFriend(@RequestBody FriendAddRequest request) {
+        return friendListService.addFriend(request);
     }
 }
