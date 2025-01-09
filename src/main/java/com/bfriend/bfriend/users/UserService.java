@@ -2,6 +2,8 @@ package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -12,7 +14,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UsersRepository usersRepository;
 
-    public String changePassword(ChangePasswordRequest request) {
+    public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
         if (!isValidPasswordFormat(request.getNewPassword())) {
             throw new IllegalArgumentException();
         }
@@ -21,7 +23,7 @@ public class UserService {
 
         saveHashedNewPassword(request.getEmail(), hashedNewPassword);
 
-        return "success";
+        return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
     public boolean isValidPasswordFormat(String newPassword) {
