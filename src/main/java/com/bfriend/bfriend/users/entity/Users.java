@@ -38,7 +38,7 @@ public class Users {
 
     private String profile;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 20, nullable = true)
     private String role;
 
 }

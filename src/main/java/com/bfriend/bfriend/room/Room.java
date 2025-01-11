@@ -1,7 +1,7 @@
 package com.bfriend.bfriend.room;
 
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
-import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
