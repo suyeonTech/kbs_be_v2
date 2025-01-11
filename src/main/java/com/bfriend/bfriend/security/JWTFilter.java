@@ -31,8 +31,16 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\": \"Authorization header missing or invalid\"}");
             return;
         }
+        // Bearer 이후의 토큰 부분 추출
+        String[] parts = authorization.split(" ");
+        if (parts.length < 2 || parts[1].trim().isEmpty()) { // 토큰 값이 없는 경우 처리
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token is missing or empty\"}");
+            return;
+        }
 
-        String token = authorization.split(" ")[1];
+        String token = parts[1];
 
         // 토큰이 만료된 상태인 경우
         if (jwtUtil.isExpired(token)) {

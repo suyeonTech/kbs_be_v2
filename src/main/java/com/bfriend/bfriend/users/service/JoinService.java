@@ -41,7 +41,7 @@ public class JoinService {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header("Authorization", JWTConstants.TOKEN_PREFIX + token)
-                .header("Location", "/main") // 리다이렉트 경로 설정
+                .header("Location", "/") // 리다이렉트 경로 설정
                 .body(new ResponseJoinDTO("회원가입이 완료되었습니다.", true));
     }
 

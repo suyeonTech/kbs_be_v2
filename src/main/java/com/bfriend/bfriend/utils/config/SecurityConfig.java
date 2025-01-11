@@ -73,7 +73,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/", "/user/join", "/h2-console/**").permitAll() // H2 콘솔 접근 허용
-                .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         );
 
