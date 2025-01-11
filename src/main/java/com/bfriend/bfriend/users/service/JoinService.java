@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class JoinService {
 
     private final UsersRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
 
     public ResponseEntity<?> joinProcess(RequestJoinDTO requestJoinDTO) {
@@ -61,7 +62,7 @@ public class JoinService {
     private Users buildUsers(RequestJoinDTO requestJoinDTO) {
         return Users.builder()
                 .nickname(requestJoinDTO.getNickname())
-                .password(bCryptPasswordEncoder.encode(requestJoinDTO.getPassword()))
+                .password(passwordEncoder.encode(requestJoinDTO.getPassword()))
                 .gender(requestJoinDTO.getGender())
                 .age(requestJoinDTO.getAge())
                 .email(requestJoinDTO.getEmail())

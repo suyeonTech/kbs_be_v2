@@ -1,10 +1,9 @@
 package com.bfriend.bfriend.friendlist;
 
-import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter

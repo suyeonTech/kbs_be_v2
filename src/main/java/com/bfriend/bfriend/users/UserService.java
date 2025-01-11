@@ -1,6 +1,9 @@
 package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
+import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.constants.PasswordCheckConstant;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +33,7 @@ public class UserService {
     }
 
     public boolean isValidPasswordFormat(String newPassword) {
-        int passwordMinLength = (int)PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
+        int passwordMinLength = (int) PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
         int passwordMaxLength = (int) PasswordCheckConstant.PASSWORD_MAX_LENGTH.getValue();
         String passwordRegex = (String) PasswordCheckConstant.PASSWORD_REGEX.getValue();
 
@@ -60,6 +63,7 @@ public class UserService {
                 .build();
 
         usersRepository.save(updatePasswordUsers);
+    }
       
     public ResponseEntity<String> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())

@@ -1,8 +1,8 @@
 package com.bfriend.bfriend.friendlist;
 
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
-import com.bfriend.bfriend.users.Users;
-import com.bfriend.bfriend.users.UsersRepository;
+import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +34,7 @@ public class FriendListService {
         friendListRepository.save(addFriend);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("친구 추가 성공");
+    }
 
     public ResponseEntity<List<FriendsListResponse>> showFriendsList(UserIdRequest request) {
         Users users = usersRepository.findByUid(request.getUid())
