@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class UsersController {
-
     private final UserService userService;
 
+    @PostMapping("/changepw")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        return userService.changePassword(request);
+      
     @PostMapping("/checkemail")
     public ResponseEntity<String> authenticationEmail(@RequestBody CheckEmailRequest request) {
         return userService.checkEmail(request);
