@@ -2,8 +2,11 @@ package com.bfriend.bfriend.friendlist;
 
 import com.bfriend.bfriend.users.Users;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Entity
 public class FriendList {
@@ -17,4 +20,6 @@ public class FriendList {
 
     @ManyToOne
     private Users addedUid;
+
+    protected FriendList() {}
 }
