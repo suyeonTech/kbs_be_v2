@@ -56,8 +56,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 요청에서 이메일 추출
         String requestEmail = request.getParameter("email");
-        System.out.println("tokenEmail: " + tokenEmail);
-        System.out.println("requestEmail: " + requestEmail);
 
         if (requestEmail != null && !tokenEmail.equals(requestEmail)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
