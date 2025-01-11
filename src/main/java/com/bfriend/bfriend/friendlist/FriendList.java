@@ -20,4 +20,6 @@ public class FriendList {
 
     @ManyToOne
     private Users addedUid;
+
+    protected FriendList() {}
 }
