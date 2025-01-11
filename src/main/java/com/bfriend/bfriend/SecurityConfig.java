@@ -15,10 +15,13 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorizeHttpRequests) ->
+                        authorizeHttpRequests
+                                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll()
+                                .anyRequest().permitAll() // Requires authentication for other requests
+
                                 authorizeHttpRequests
                                         .anyRequest().permitAll()
-                        //.requestMatchers(new AntPathRequestMatcher("/h2-consoleb/**")).permitAll()
-                        //.anyRequest().authenticated() // Requires authentication for other requests
+
                 )
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()) // Disable CSRF protection for H2 console (optional)
