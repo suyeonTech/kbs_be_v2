@@ -9,10 +9,11 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 public class Users {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long uid;
+
+    private String email;
 
     @Column(length = 20, nullable = false)
     private String password;
@@ -31,4 +32,8 @@ public class Users {
     private Boolean isStopped;
 
     private String profile;
+
+    protected Users() {
+    }
+
 }
