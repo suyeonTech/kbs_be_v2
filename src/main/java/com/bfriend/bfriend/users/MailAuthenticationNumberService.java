@@ -1,10 +1,10 @@
 package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
+import com.bfriend.bfriend.utils.constants.MailAuthenticationConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

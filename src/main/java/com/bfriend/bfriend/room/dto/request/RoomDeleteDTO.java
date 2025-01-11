@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.room.dto.request;
 
-import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.entity.Users;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
