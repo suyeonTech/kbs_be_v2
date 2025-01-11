@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.friendlist;
 
+import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import com.bfriend.bfriend.friendlist.dto.request.UserIdRequest;
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ import java.util.List;
 public class FriendListContoller {
 
     private final FriendListService friendListService;
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addFriend(@RequestBody FriendAddRequest request) {
+        return friendListService.addFriend(request);
 
     @PostMapping("/list")
     public ResponseEntity<List<FriendsListResponse>> showFriendsList(@RequestBody UserIdRequest request) {
