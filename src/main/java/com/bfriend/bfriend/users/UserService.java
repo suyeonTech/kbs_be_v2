@@ -7,12 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
+import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UsersRepository usersRepository;
+    private final MailService mailService;
 
     public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
         if (!isValidPasswordFormat(request.getNewPassword())) {
@@ -57,5 +60,15 @@ public class UserService {
                 .build();
 
         usersRepository.save(updatePasswordUsers);
+      
+    public ResponseEntity<String> checkEmail(CheckEmailRequest request) {
+        Users users = usersRepository.findByEmail(request.getEmail())
+                .orElseThrow(IllegalArgumentException::new);
+
+        return mailService.sendMail(users.getEmail());
+    }
+
+    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        return mailService.checkAuthenticationNumber(request);
     }
 }
