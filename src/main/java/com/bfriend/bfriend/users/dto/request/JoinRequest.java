@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.users.dto.request;
 
-import static com.bfriend.bfriend.utils.constants.ValidationConstants.*; // ValidationConstants의 상수를 바로 사용
+import static com.bfriend.bfriend.utils.constants.ValidationConstants.*;
 import com.bfriend.bfriend.utils.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class RequestJoinDTO {
+public class JoinRequest {
 
     @NotBlank(message = "닉네임은"+VALIDATION_MESSAGE)
     @Size(min=2, max=10, message="닉네임은 2자 이상, 10자 이하여야 합니다.")

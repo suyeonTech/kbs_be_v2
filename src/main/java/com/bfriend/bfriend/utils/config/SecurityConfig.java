@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.utils.config;
 
+import com.bfriend.bfriend.security.CustomUserDetailsService;
 import com.bfriend.bfriend.security.JWTFilter;
 import com.bfriend.bfriend.security.JWTUtil;
 import com.bfriend.bfriend.security.LoginFilter;
@@ -41,7 +42,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -73,7 +74,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/user/join", "/h2-console/**").permitAll() // H2 콘솔 접근 허용
+                .requestMatchers("/login", "/", "/user/join", "/h2-console/**").permitAll()
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         );
@@ -82,7 +83,12 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(
+                        authenticationManager(authenticationConfiguration),
+                        jwtUtil,
+                        customUserDetailsService,
+                        passwordEncoder
+                ), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

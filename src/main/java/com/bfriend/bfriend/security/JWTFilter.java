@@ -31,9 +31,9 @@ public class JWTFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"error\": \"Authorization header missing or invalid\"}");
             return;
         }
-        // Bearer 이후의 토큰 부분 추출
+        // Bearer 이후의 토큰 부분이 없는 경우
         String[] parts = authorization.split(" ");
-        if (parts.length < 2 || parts[1].trim().isEmpty()) { // 토큰 값이 없는 경우 처리
+        if (parts.length < 2 || parts[1].trim().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Token is missing or empty\"}");
@@ -42,7 +42,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String token = parts[1];
 
-        // 토큰이 만료된 상태인 경우
         if (jwtUtil.isExpired(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
@@ -54,7 +53,6 @@ public class JWTFilter extends OncePerRequestFilter {
         String tokenEmail  = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        // 요청에서 이메일 추출
         String requestEmail = request.getParameter("email");
 
         if (requestEmail != null && !tokenEmail.equals(requestEmail)) {
@@ -85,6 +83,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().equals("/login")|| request.getRequestURI().equals("/user/join");
+        return request.getRequestURI().equals("/login") ||request.getRequestURI().equals("/user/join") ||request.getRequestURI().startsWith("/h2-consoleb");
     }
 }

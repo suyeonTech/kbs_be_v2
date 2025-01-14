@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ResponseJoinDTO {
+public class JoinResponse {
     private String message;
     private boolean success;
 }
