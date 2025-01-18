@@ -1,7 +1,12 @@
 package com.bfriend.bfriend.room;
 
+import com.bfriend.bfriend.exception.ExceptionCode;
+import com.bfriend.bfriend.exception.NotFoundException;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
+import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
+import com.bfriend.bfriend.roomptc.RoomPtcService;
+import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +17,7 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-
+    private final RoomPtcService roomPtcService;
 
     //모임방 생성
     public Room create(RoomCreateDTO roomCreateDTO) {
@@ -46,6 +51,26 @@ public class RoomService {
     public List<Room> searchRoom(String keyword) {
         return roomRepository.findAllByKeyword(keyword);
     }
+
+  public RoomDetailResponseDTO getRoomDetail(Long roomId) {
+    Room foundRoom  = roomRepository.findById(roomId)
+        .orElseThrow(() -> new NotFoundException(ExceptionCode.ROOM_NOTFOUND,roomId.toString()));
+
+    List<Users> participants = roomPtcService.getParticipants(roomId);
+
+    return RoomDetailResponseDTO.builder()
+        .master(foundRoom.getMasterUid())
+        .participants(participants)
+        .roomName(foundRoom.getRoomName())
+        .maxPtc(foundRoom.getMaxPtc())
+        .joinPtc(foundRoom.getJoinPtc())
+        .location(foundRoom.getLocation())
+        .restaurant(foundRoom.getRestaurant())
+        .foodType(foundRoom.getFoodType())
+        .meetingTime(foundRoom.getMeetingTime())
+        .isReported(foundRoom.getIsReported())
+        .build();
+  }
 
 
 }

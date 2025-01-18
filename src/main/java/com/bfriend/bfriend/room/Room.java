@@ -21,7 +21,7 @@ public class Room {
     private Long rid;
 
     @ManyToOne
-    private Users uid;
+    private Users masterUid;
 
     private LocalDateTime meetingTime;
 
