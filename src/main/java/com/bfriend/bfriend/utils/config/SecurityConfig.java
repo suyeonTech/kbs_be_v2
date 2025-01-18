@@ -73,7 +73,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/user/join", "/h2-console/**").permitAll() // H2 콘솔 접근 허용
+                .requestMatchers("/login", "/", "/user/join", "/h2-consoleb/**").permitAll() // H2 콘솔 접근 허용
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         );

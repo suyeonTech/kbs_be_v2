@@ -83,8 +83,9 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().equals("/login")|| request.getRequestURI().equals("/user/join");
+        return request.getRequestURI().equals("/login")|| request.getRequestURI().equals("/user/join")|| request.getRequestURI().startsWith("/h2-consoleb");
     }
 }
