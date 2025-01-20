@@ -1,4 +1,5 @@
 package com.bfriend.bfriend.security;
+
 import com.bfriend.bfriend.utils.constants.JWTConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -10,14 +11,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -27,34 +25,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JWTUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
-
-//    @Override
-//    protected String obtainUsername(HttpServletRequest request) {
-//        return request.getParameter("email");
-//    }
-//
-//    @Override
-//    public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
-//
-//        String email = obtainUsername(req);
-//        String password = obtainPassword(req);
-//
-//        System.out.println("Attempting login with email: " + email + ", password: " + password);
-//
-//        // 이메일로 사용자 로드
-//        CustomUserDetails userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(email);
-//        System.out.println("User loaded: " + userDetails.getUsername());
-//
-//        // 비밀번호 검증
-//        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-//            System.out.println("Password does not match for user: " + email);
-//            throw new BadCredentialsException("Invalid username or password");
-//        }
-//
-//        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
-//
-//        return authenticationManager.authenticate(authToken);
-//    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {

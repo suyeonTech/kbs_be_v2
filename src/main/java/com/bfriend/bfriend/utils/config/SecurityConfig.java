@@ -74,7 +74,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/user/join", "/h2-console/**").permitAll()
+                .requestMatchers("/login", "/", "/auth/join", "/h2-console/**").permitAll()
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         );

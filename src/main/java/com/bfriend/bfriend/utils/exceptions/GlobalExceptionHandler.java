@@ -1,6 +1,5 @@
 package com.bfriend.bfriend.utils.exceptions;
 
-import jakarta.validation.ValidationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
