@@ -2,6 +2,7 @@ package com.bfriend.bfriend.room;
 
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
+import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,10 @@ public class RoomController {
         return "room_page"; //성공시 모임촌 페이지 반환
     }
 
-
+  //상세보기
+  @GetMapping("/detail/{roomId}")
+  public RoomDetailResponseDTO getBoardDetail(@PathVariable Long roomId) {
+    return roomService.getRoomDetail(roomId);
+  }
 
 }
