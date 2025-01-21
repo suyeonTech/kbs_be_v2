@@ -23,7 +23,7 @@ public class RoomService {
     public Room create(RoomCreateDTO roomCreateDTO) {
         //roomCreateDTO를 사용하여 room객체 생성
         Room room = Room.builder()
-                .uid(roomCreateDTO.getUid())
+                .masterUid(roomCreateDTO.getUid())
                 .meetingTime(roomCreateDTO.getMeetingTime())
                 .roomName(roomCreateDTO.getRoomName())
                 .location(roomCreateDTO.getLocation())
