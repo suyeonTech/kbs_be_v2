@@ -1,5 +1,7 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.exception.ExceptionCode;
+import com.bfriend.bfriend.exception.NotFoundException;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.utils.constants.MailAuthenticationConstants;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,7 @@ public class MailAuthenticationNumberService {
         String authenticationNumber = (String) redisTemplate.opsForValue().get(emailAuthenticationNumberNamespace + request.getEmail());
 
         if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
-            throw new IllegalArgumentException();
+            throw new NotFoundException(ExceptionCode.USERS_WRONGAUTHENTICIATIONNUMBER, request.getAuthenticationNumber());
         }
 
         deleteToRedis(request.getEmail());
