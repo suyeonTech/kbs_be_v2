@@ -42,7 +42,7 @@ public class MailAuthenticationNumberService {
         String authenticationNumber = (String) redisTemplate.opsForValue().get(emailAuthenticationNumberNamespace + request.getEmail());
 
         if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
-            throw new NotFoundException(ExceptionCode.USERS_WRONGAUTHENTICIATIONNUMBER, request.getAuthenticationNumber());
+            throw new NotFoundException(ExceptionCode.USERS_AUTHENTICIATIONNUMBERNOTFOUND, request.getAuthenticationNumber());
         }
 
         deleteToRedis(request.getEmail());
