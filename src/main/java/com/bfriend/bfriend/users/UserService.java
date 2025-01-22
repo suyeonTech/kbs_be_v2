@@ -58,7 +58,7 @@ public class UserService {
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {
         Users users = usersRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, email));
 
         Users updatePasswordUsers = users.toBuilder()
                 .password(hashedNewPassword)
