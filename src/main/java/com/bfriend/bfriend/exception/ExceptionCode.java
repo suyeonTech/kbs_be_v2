@@ -16,7 +16,7 @@ public enum ExceptionCode {
     // USERS
     USERS_EMAILNOTFOUND(BAD_REQUEST, "USERS_001", "존재하지 않는 이메일입니다."),
     USERS_AUTHENTICIATIONNUMBERNOTFOUND(BAD_REQUEST, "USERS_002", "이메일 인증 번호가 맞지 않습니다."),
-    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_003", "존재하지 않는 uid입니다.");
+    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_003", "존재하지 않는 사용자 ID입니다.");
 
     private final HttpStatus status;
 
