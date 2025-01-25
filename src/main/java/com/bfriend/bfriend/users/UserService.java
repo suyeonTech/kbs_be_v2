@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 
+import java.util.concurrent.CompletableFuture;
+
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -67,7 +69,7 @@ public class UserService {
         usersRepository.save(updatePasswordUsers);
     }
       
-    public ResponseEntity<String> checkEmail(CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<String>> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, request.getEmail()));
 
