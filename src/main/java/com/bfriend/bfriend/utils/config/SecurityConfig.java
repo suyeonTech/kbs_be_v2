@@ -4,6 +4,7 @@ import com.bfriend.bfriend.security.CustomUserDetailsService;
 import com.bfriend.bfriend.security.JWTFilter;
 import com.bfriend.bfriend.security.JWTUtil;
 import com.bfriend.bfriend.security.LoginFilter;
+import com.bfriend.bfriend.security.exception.CustomAuthenticationEntryPoint;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -77,7 +79,9 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/", "/auth/join", "/h2-console/**").permitAll()
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
-        );
+        ).exceptionHandling(exception -> exception
+                .authenticationEntryPoint(customAuthenticationEntryPoint) // Custom EntryPoint 등록
+        );;
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
@@ -85,9 +89,7 @@ public class SecurityConfig {
         http
                 .addFilterAt(new LoginFilter(
                         authenticationManager(authenticationConfiguration),
-                        jwtUtil,
-                        customUserDetailsService,
-                        passwordEncoder
+                        jwtUtil
                 ), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement(session -> session
