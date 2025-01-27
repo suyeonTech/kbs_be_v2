@@ -1,9 +1,7 @@
 package com.bfriend.bfriend.utils.exceptions;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,7 +18,7 @@ public class GlobalExceptionHandler {
                 errorCode.getStatus(),
                 errorCode.getCode(),
                 errorCode.getMessage(),
-                errors
+                errors != null ? errors : Map.of()
         );
         return ResponseEntity.status(errorCode.getStatus()).body(errorResponse);
     }
@@ -39,5 +37,11 @@ public class GlobalExceptionHandler {
             validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return buildErrorResponse(ErrorCode.INVALID_INPUT_VALUE, validationErrors);
+    }
+
+    @ExceptionHandler(AuthenticationServiceException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationServiceException(AuthenticationServiceException ex) {
+        ErrorCode errorCode = ErrorCode.AUTHENTICATION_FAILED;
+        return buildErrorResponse(errorCode, null);
     }
 }

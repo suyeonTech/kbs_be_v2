@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -19,49 +20,53 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            String token = extractToken(request);
+            Authentication authentication = createAuthenticationFromToken(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (AuthenticationException ex) {
+            SecurityContextHolder.clearContext();
+            throw ex;
+        }
 
+        filterChain.doFilter(request, response);
+    }
+
+    private String extractToken(HttpServletRequest request) {
         String authorization= request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith(JWTConstants.TOKEN_PREFIX)) {
-            throw new AuthenticationServiceException("Authorization header missing or invalid");
+            throw new AuthenticationServiceException("Authorization 헤더가 소실되었거나 유효하지 않습니다.");
         }
 
         String[] parts = authorization.split(" ");
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new AuthenticationServiceException("Token is missing or empty");
+            throw new AuthenticationServiceException("토큰이 없거나 소실되었습니다.");
         }
 
         String token = parts[1];
 
         if (jwtUtil.isExpired(token)) {
-            throw new AuthenticationServiceException("Token expired");
+            throw new AuthenticationServiceException("Token이 만료되었습니다.");
         }
 
-        String tokenEmail  = jwtUtil.getEmail(token);
+        return token;
+    }
+
+    private Authentication createAuthenticationFromToken(String token) {
+        String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        String requestEmail = request.getParameter("email");
-
-        if (requestEmail != null && !tokenEmail.equals(requestEmail)) {
-            throw new AuthenticationServiceException("Token email does not match request email");
-        }
-
-        Users userEntity = Users.builder()
-                .email(tokenEmail)
+        Users UserEntity = Users.builder()
+                .email(email)
                 .password("temppassword")
                 .role(role)
                 .build();
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);    // 세션이 생성되었기 때문에, 특정한 경로에 접근 가능해짐
-
-        filterChain.doFilter(request, response);
+        CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity);
+        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
     }
 
     @Override
