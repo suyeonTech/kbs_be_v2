@@ -2,22 +2,17 @@ package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.security.JWTUtil;
 import com.bfriend.bfriend.users.dto.request.JoinRequest;
-import com.bfriend.bfriend.users.dto.response.JoinResponse;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.constants.JWTConstants;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +37,8 @@ public class JoinService {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header("Authorization", JWTConstants.TOKEN_PREFIX + token)
-                .body(new JoinResponse("회원가입이 완료되었습니다.", true));
+                .body(new SuccessResponse(HttpStatus.CREATED.value(), "회원가입이 완료되었습니다."));
+
     }
 
     private Users buildUsers(JoinRequest joinRequest) {

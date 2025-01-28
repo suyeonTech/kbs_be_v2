@@ -1,6 +1,7 @@
 package com.bfriend.bfriend.security;
 
 import com.bfriend.bfriend.utils.constants.JWTConstants;
+import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,9 +52,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             res.addHeader("Authorization", JWTConstants.TOKEN_PREFIX + token);
 
+            SuccessResponse successResponse = new SuccessResponse(
+                    HttpServletResponse.SC_OK,
+                    "로그인에 성공하셨습니다."
+            );
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
-            res.getWriter().write("\"로그인에 성공하셨습니다.\"");
+            res.getWriter().write(new ObjectMapper().writeValueAsString(successResponse));
 
         } catch (IOException ex) {
             throw new RuntimeException("응답 작성 실패", ex);
