@@ -1,7 +1,8 @@
 package com.bfriend.bfriend.friendlist;
 
-import com.bfriend.bfriend.exception.ExceptionCode;
-import com.bfriend.bfriend.exception.NotFoundException;
+
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
 import com.bfriend.bfriend.users.entity.Users;
@@ -41,7 +42,7 @@ public class FriendListService {
 
     public ResponseEntity<List<FriendsListResponse>> showFriendsList(Long uid) {
         Users users = usersRepository.findByUid(uid)
-                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_UIDNOTFOUND, uid.toString()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_UIDNOTFOUND, uid.toString()));
 
         List<FriendsListResponse> friendsList = friendListRepository.findByAddUid(users);
 

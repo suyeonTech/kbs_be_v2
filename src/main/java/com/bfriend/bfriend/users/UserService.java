@@ -1,13 +1,12 @@
 package com.bfriend.bfriend.users;
 
-import com.bfriend.bfriend.exception.ExceptionCode;
-import com.bfriend.bfriend.exception.NotFoundException;
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.constants.PasswordCheckConstant;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,7 @@ public class UserService {
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {
         Users users = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, email));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, email));
 
         Users updatePasswordUsers = users.toBuilder()
                 .password(hashedNewPassword)
@@ -71,7 +70,7 @@ public class UserService {
       
     public CompletableFuture<ResponseEntity<String>> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, request.getEmail()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, request.getEmail()));
 
         return mailService.sendMail(users.getEmail());
     }

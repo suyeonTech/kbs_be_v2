@@ -1,7 +1,7 @@
 package com.bfriend.bfriend.roomptc;
 
-import com.bfriend.bfriend.exception.ExceptionCode;
-import com.bfriend.bfriend.exception.NotFoundException;
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.Room;
 import com.bfriend.bfriend.room.RoomRepository;
 
@@ -22,7 +22,7 @@ public class RoomPtcService {
 
     public List<Users> getParticipants(Long roomId){
         Room foundRoom  = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundException(ExceptionCode.ROOM_NOTFOUND,roomId.toString()));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
         List<Users> participants = roomPtcRopository.findUsersByRoom(foundRoom);
 
         //참여자가 없을 경우 로그로 알림
