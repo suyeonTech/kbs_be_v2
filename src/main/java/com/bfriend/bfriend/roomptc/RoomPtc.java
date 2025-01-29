@@ -1,7 +1,6 @@
 package com.bfriend.bfriend.roomptc;
 
 import com.bfriend.bfriend.room.Room;
-
 import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
