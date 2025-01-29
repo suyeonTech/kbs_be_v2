@@ -1,5 +1,8 @@
 package com.bfriend.bfriend.security;
+
 import com.bfriend.bfriend.utils.constants.JWTConstants;
+import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,10 +11,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import java.util.Collection;
-import java.util.Iterator;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -20,41 +23,58 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JWTUtil jwtUtil;
 
     @Override
-    protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter("email");
-    }
-
-    @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException {
 
-        String email = obtainUsername(req);
-        String password = obtainPassword(req);
+        try{
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> credentials = objectMapper.readValue(req.getInputStream(), Map.class);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
+            String email = credentials.get("email");
+            String password = credentials.get("password");
 
-        return authenticationManager.authenticate(authToken);
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
+        } catch (IOException ex) {
+            throw new RuntimeException("요청 본문 파싱에 실패했습니다.", ex);
+        }
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication authentication) {
+        try {
+            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            String email = customUserDetails.getUsername();
+            String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
 
-        String email = customUserDetails.getUsername();
+            String token = jwtUtil.createJwt(email, role, JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR);
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
+            res.addHeader("Authorization", JWTConstants.TOKEN_PREFIX + token);
 
-        String role = auth.getAuthority();
+            SuccessResponse successResponse = new SuccessResponse(
+                    HttpServletResponse.SC_OK,
+                    "로그인에 성공하셨습니다."
+            );
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json;charset=UTF-8");
+            res.getWriter().write(new ObjectMapper().writeValueAsString(successResponse));
 
-        String token = jwtUtil.createJwt(email, role, JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR); // 1시간 토큰
-
-        response.addHeader("Authorization", JWTConstants.TOKEN_PREFIX + token);
+        } catch (IOException ex) {
+            throw new RuntimeException("응답 작성 실패", ex);
+        }
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        Map<String, Object> errorResponse = Map.of(
+                "status", 401,
+                "error", "INVALID_CREDENTIALS",
+                "message", "이메일 또는 비밀번호가 잘못되었습니다."
+        );
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
     }
 }

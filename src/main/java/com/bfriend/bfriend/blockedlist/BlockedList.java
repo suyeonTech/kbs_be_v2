@@ -1,7 +1,6 @@
 package com.bfriend.bfriend.blockedlist;
 
 import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 
