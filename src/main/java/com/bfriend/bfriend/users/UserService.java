@@ -1,5 +1,7 @@
 package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.exception.ExceptionCode;
+import com.bfriend.bfriend.exception.NotFoundException;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
+
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Service
@@ -56,7 +60,7 @@ public class UserService {
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {
         Users users = usersRepository.findByEmail(email)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, email));
 
         Users updatePasswordUsers = users.toBuilder()
                 .password(hashedNewPassword)
@@ -65,9 +69,9 @@ public class UserService {
         usersRepository.save(updatePasswordUsers);
     }
       
-    public ResponseEntity<String> checkEmail(CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<String>> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_EMAILNOTFOUND, request.getEmail()));
 
         return mailService.sendMail(users.getEmail());
     }

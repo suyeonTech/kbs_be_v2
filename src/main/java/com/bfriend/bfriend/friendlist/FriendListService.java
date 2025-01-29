@@ -1,17 +1,20 @@
 package com.bfriend.bfriend.friendlist;
 
+import com.bfriend.bfriend.exception.ExceptionCode;
+import com.bfriend.bfriend.exception.NotFoundException;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
+import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.bfriend.bfriend.friendlist.dto.request.UserIdRequest;
-import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
 
 import java.util.List;
 
+@Log4j2
 @RequiredArgsConstructor
 @Service
 public class FriendListService {
@@ -36,11 +39,15 @@ public class FriendListService {
         return ResponseEntity.status(HttpStatus.CREATED).body("친구 추가 성공");
     }
 
-    public ResponseEntity<List<FriendsListResponse>> showFriendsList(UserIdRequest request) {
-        Users users = usersRepository.findByUid(request.getUid())
-                .orElseThrow();
+    public ResponseEntity<List<FriendsListResponse>> showFriendsList(Long uid) {
+        Users users = usersRepository.findByUid(uid)
+                .orElseThrow(() -> new NotFoundException(ExceptionCode.USERS_UIDNOTFOUND, uid.toString()));
 
         List<FriendsListResponse> friendsList = friendListRepository.findByAddUid(users);
+
+        if(friendsList.isEmpty()) {
+            log.info("사용자 ID {}에 추가된 친구가 없습니다.", uid);
+        }
 
         return ResponseEntity.ok(friendsList);
     }

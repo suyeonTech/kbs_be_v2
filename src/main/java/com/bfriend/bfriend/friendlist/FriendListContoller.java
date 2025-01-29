@@ -26,6 +26,6 @@ public class FriendListContoller {
 
     @PostMapping("/list")
     public ResponseEntity<List<FriendsListResponse>> showFriendsList(@RequestBody UserIdRequest request) {
-        return friendListService.showFriendsList(request);
+        return friendListService.showFriendsList(request.getUid());
     }
 }

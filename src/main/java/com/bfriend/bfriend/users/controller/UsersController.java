@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +25,7 @@ public class UsersController {
     }
 
     @PostMapping("/checkemail")
-    public ResponseEntity<String> authenticationEmail(@RequestBody CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<String>> authenticationEmail(@RequestBody CheckEmailRequest request) {
         return userService.checkEmail(request);
     }
 

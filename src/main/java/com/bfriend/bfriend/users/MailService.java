@@ -7,9 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Service
@@ -35,14 +39,22 @@ public class MailService {
         return mimeMessage;
     }
 
-    public ResponseEntity<String> sendMail(String email) {
+    @Async
+    public CompletableFuture<ResponseEntity<String>> sendMail(String email) {
         String authenticationNumber = mailAuthenticationNumberService.create();
         MimeMessage mimeMessage = createMail(email, authenticationNumber);
 
-        javaMailSender.send(mimeMessage);
+        try {
+            javaMailSender.send(mimeMessage);
+        }
+        catch (MailException e) {
+            throw new RuntimeException("이메일 전송 중 오류 발생", e);
+        }
         mailAuthenticationNumberService.saveToRedis(email, authenticationNumber);
 
-        return ResponseEntity.ok("이메일 인증 번호 발송 성공");
+        return CompletableFuture.supplyAsync(() -> {
+            return ResponseEntity.ok("이메일 인증 번호 발송 성공");
+        });
     }
 
     public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
