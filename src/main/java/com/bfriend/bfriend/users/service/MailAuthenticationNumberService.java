@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.users;
+package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
