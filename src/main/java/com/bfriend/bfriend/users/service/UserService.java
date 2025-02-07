@@ -91,7 +91,7 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
         UserDetailResponse response = UserDetailResponse.builder()
-                .email(user.getEmail())
+                .email(email)
                 .nickname(user.getNickname())
                 .gender(user.getGender())
                 .age(user.getAge())
