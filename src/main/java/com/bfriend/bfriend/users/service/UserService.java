@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users.service;
 
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
@@ -84,8 +85,8 @@ public class UserService {
         return mailService.checkAuthenticationNumber(request);
     }
 
-    public ResponseEntity<UserDetailResponse> getProfileDetail(Authentication authentication) {
-        String email = authentication.getName();
+    public ResponseEntity<UserDetailResponse> getProfileDetail(CustomUserDetails userDetails) {
+        String email = userDetails.getUsername();
 
         Users user = usersRepository.findByEmail(email)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
