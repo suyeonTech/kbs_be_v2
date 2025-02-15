@@ -13,11 +13,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // AUTH
-    DUPLICATE_EMAIL(BAD_REQUEST, "DUPLICATE_EMAIL", "이미 사용 중인 이메일입니다."),
-    INVALID_INPUT_VALUE(BAD_REQUEST, "INVALID_INPUT_VALUE", "입력값이 유효하지 않습니다."),
-
-    INVALID_CREDENTIALS(UNAUTHORIZED, "INVALID_CREDENTIALS", "이메일 또는 비밀번호가 잘못되었습니다."),
-    AUTHENTICATION_FAILED(UNAUTHORIZED, "AUTHENTICATION_FAILED", "인증에 실패하였습니다."),
+    DUPLICATE_EMAIL(BAD_REQUEST, "AUTH_001", "이미 사용 중인 이메일입니다."),
+    INVALID_INPUT_VALUE(BAD_REQUEST, "AUTH_002", "입력값이 유효하지 않습니다."),
+    INVALID_CREDENTIALS(UNAUTHORIZED, "AUTH_003", "이메일 또는 비밀번호가 잘못되었습니다."),
+    AUTHENTICATION_FAILED(UNAUTHORIZED, "AUTH_004", "인증에 실패하였습니다."),
 
     //ROOM
     ROOM_NOTFOUND(BAD_REQUEST, "ROOM_001", "존재하지 않는 모임방입니다."),

@@ -1,11 +1,10 @@
-package com.bfriend.bfriend.users;
+package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
