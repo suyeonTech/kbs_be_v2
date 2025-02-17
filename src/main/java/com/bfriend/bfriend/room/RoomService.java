@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.bfriend.bfriend.room.mapper.RoomMapper.toUserDTO;
+import static com.bfriend.bfriend.room.mapper.RoomMapper.toUsersDTO;
+
 @RequiredArgsConstructor
 @Service
 public class RoomService {
@@ -53,6 +56,7 @@ public class RoomService {
         return roomRepository.findAllByKeyword(keyword);
     }
 
+    //모임방 상세보기
   public RoomDetailResponseDTO getRoomDetail(Long roomId) {
     Room foundRoom  = roomRepository.findById(roomId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
@@ -60,11 +64,9 @@ public class RoomService {
     List<Users> participants = roomPtcService.getParticipants(roomId);
 
     return RoomDetailResponseDTO.builder()
-        .master(foundRoom.getMasterUid())
-        .participants(participants)
+        .master(toUserDTO(foundRoom.getMasterUid()))
+        .participants(toUsersDTO(participants))
         .roomName(foundRoom.getRoomName())
-        .maxPtc(foundRoom.getMaxPtc())
-        .joinPtc(foundRoom.getJoinPtc())
         .location(foundRoom.getLocation())
         .restaurant(foundRoom.getRestaurant())
         .foodType(foundRoom.getFoodType())
@@ -72,6 +74,5 @@ public class RoomService {
         .isReported(foundRoom.getIsReported())
         .build();
   }
-
 
 }
