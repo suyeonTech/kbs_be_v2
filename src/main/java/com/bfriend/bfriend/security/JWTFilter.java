@@ -75,6 +75,7 @@ public class JWTFilter extends OncePerRequestFilter {
         return request.getRequestURI().equals("/login")
                 ||request.getRequestURI().equals("/auth/join")
                 ||request.getRequestURI().startsWith("/h2-consoleb")
-                ||request.getRequestURI().equals("/favicon.ico");
+                ||request.getRequestURI().equals("/favicon.ico")
+                ||request.getRequestURI().startsWith("/room");
     }
 }

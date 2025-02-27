@@ -9,6 +9,7 @@ import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.roomptc.RoomPtcService;
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import static com.bfriend.bfriend.room.mapper.RoomMapper.toUsersDTO;
 
 @RequiredArgsConstructor
 @Service
+@Log4j2
 public class RoomService {
 
     private final RoomRepository roomRepository;
@@ -60,8 +62,10 @@ public class RoomService {
   public RoomDetailResponseDTO getRoomDetail(Long roomId) {
     Room foundRoom  = roomRepository.findById(roomId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
+    log.debug("조회한 룸 : {}",foundRoom.getRid());
 
     List<Users> participants = roomPtcService.getParticipants(roomId);
+      log.debug("참여자 : {}",participants.size());
 
     return RoomDetailResponseDTO.builder()
         .master(toUserDTO(foundRoom.getMasterUid()))
