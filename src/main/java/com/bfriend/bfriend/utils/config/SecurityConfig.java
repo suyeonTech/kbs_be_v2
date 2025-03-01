@@ -76,7 +76,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**","room/detail/**").permitAll()
+                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**","room/detail/**","room/myroom/**").permitAll()
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         ).exceptionHandling(exception -> exception

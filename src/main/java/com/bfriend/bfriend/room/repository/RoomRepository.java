@@ -1,7 +1,7 @@
-package com.bfriend.bfriend.room;
+package com.bfriend.bfriend.room.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.users.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,5 +23,10 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             + "or r.foodType like %:kw% "
     )
     List<Room> findAllByKeyword(@Param("kw") String kw);
+
+    @Query("SELECT r FROM Room r WHERE r.masterUid = :uid")
+    List<Room> findAllByMasterUid(@Param("uid") Users uid);
+
+    //    List<Room> findAllByMasterUid(Users master);
 
 }

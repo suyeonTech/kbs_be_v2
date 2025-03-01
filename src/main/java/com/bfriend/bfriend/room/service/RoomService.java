@@ -1,6 +1,13 @@
-package com.bfriend.bfriend.room;
+package com.bfriend.bfriend.room.service;
 
 
+import com.bfriend.bfriend.room.dto.MyRoomDTO;
+import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
+import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomptc.RoomPtcRopository;
+import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
@@ -10,12 +17,12 @@ import com.bfriend.bfriend.roomptc.RoomPtcService;
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.bfriend.bfriend.room.mapper.RoomMapper.toUserDTO;
-import static com.bfriend.bfriend.room.mapper.RoomMapper.toUsersDTO;
+import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +31,8 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomPtcService roomPtcService;
+    private final UsersRepository usersRepository;
+    private final RoomPtcRopository roomPtcRopository;
 
     //모임방 생성
     public Room create(RoomCreateDTO roomCreateDTO) {
@@ -78,5 +87,26 @@ public class RoomService {
         .isReported(foundRoom.getIsReported())
         .build();
   }
+
+  //나와 관련된 방 상세보기
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId){
+        Users master = usersRepository.findByUid(userId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        log.debug("방장 : {}", master);
+        List<Room> createdRooms = roomRepository.findAllByMasterUid(master);
+        log.debug("내가 만든 룸 : {}",createdRooms.size());
+        List<MyRoomDTO> createdDTOs = toRooms(createdRooms);
+
+        List<Room> joinedRooms = roomPtcRopository.findByUid(master);
+        log.debug("내가 참여한 룸 : {}",joinedRooms.size());
+        List<MyRoomDTO> joinedDTOs = toRooms(joinedRooms);
+
+        return ResponseEntity.ok(
+                MyRoomDetailResponseDTO.builder()
+                .createdRooms(createdDTOs)
+                .joinedRooms(joinedDTOs)
+                .build());
+    }
 
 }

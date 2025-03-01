@@ -2,8 +2,8 @@ package com.bfriend.bfriend.roomptc;
 
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
-import com.bfriend.bfriend.room.Room;
-import com.bfriend.bfriend.room.RoomRepository;
+import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.room.repository.RoomRepository;
 
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;

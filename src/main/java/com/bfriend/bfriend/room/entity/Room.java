@@ -1,10 +1,8 @@
-package com.bfriend.bfriend.room;
+package com.bfriend.bfriend.room.entity;
 
-import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
