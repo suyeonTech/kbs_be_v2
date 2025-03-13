@@ -19,7 +19,7 @@ public class RoomMapper {
         return userDTO;
     }
 
-    public static List<UserDTO> toUsersDTO(List<Users> users) {
+    public static List<UserDTO> toUserDTOs(List<Users> users) {
 
         return users.stream()
                 .map(user -> UserDTO.builder()
@@ -30,7 +30,7 @@ public class RoomMapper {
                 .collect(Collectors.toList());
     }
 
-    public static List<MyRoomDTO> toRooms(List<Room> rooms) {
+    public static List<MyRoomDTO> toRoomDTOs(List<Room> rooms) {
 
         return rooms.stream()
                 .map(room -> MyRoomDTO.builder()

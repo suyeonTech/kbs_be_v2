@@ -71,14 +71,13 @@ public class RoomService {
   public RoomDetailResponseDTO getRoomDetail(Long roomId) {
     Room foundRoom  = roomRepository.findById(roomId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
-    log.debug("조회한 룸 : {}",foundRoom.getRid());
 
     List<Users> participants = roomPtcService.getParticipants(roomId);
       log.debug("참여자 : {}",participants.size());
 
     return RoomDetailResponseDTO.builder()
         .master(toUserDTO(foundRoom.getMasterUid()))
-        .participants(toUsersDTO(participants))
+        .participants(toUserDTOs(participants))
         .roomName(foundRoom.getRoomName())
         .location(foundRoom.getLocation())
         .restaurant(foundRoom.getRestaurant())
@@ -95,12 +94,12 @@ public class RoomService {
 
         log.debug("방장 : {}", master);
         List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
-        log.debug("내가 만든 룸 : {}",createdRooms.size());
-        List<MyRoomDTO> createdDTOs = toRooms(createdRooms);
+        log.debug("내가 만든 모임방 : {}",createdRooms.size());
+        List<MyRoomDTO> createdDTOs = toRoomDTOs(createdRooms);
 
         List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
-        log.debug("내가 참여한 룸 : {}",joinedRooms.size());
-        List<MyRoomDTO> joinedDTOs = toRooms(joinedRooms);
+        log.debug("내가 참여한 모임방 : {}",joinedRooms.size());
+        List<MyRoomDTO> joinedDTOs = toRoomDTOs(joinedRooms);
 
         return ResponseEntity.ok(
                 MyRoomDetailResponseDTO.builder()
