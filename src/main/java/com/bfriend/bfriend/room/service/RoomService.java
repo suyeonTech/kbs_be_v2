@@ -94,11 +94,11 @@ public class RoomService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
         log.debug("방장 : {}", master);
-        List<Room> createdRooms = roomRepository.findAllByMasterUid(master);
+        List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
         log.debug("내가 만든 룸 : {}",createdRooms.size());
         List<MyRoomDTO> createdDTOs = toRooms(createdRooms);
 
-        List<Room> joinedRooms = roomPtcRopository.findByUid(master);
+        List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
         log.debug("내가 참여한 룸 : {}",joinedRooms.size());
         List<MyRoomDTO> joinedDTOs = toRooms(joinedRooms);
 

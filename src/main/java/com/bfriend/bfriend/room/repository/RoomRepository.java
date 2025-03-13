@@ -24,9 +24,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     )
     List<Room> findAllByKeyword(@Param("kw") String kw);
 
-    @Query("SELECT r FROM Room r WHERE r.masterUid = :uid")
-    List<Room> findAllByMasterUid(@Param("uid") Users uid);
-
-    //    List<Room> findAllByMasterUid(Users master);
+    @Query("SELECT r FROM Room r WHERE r.masterUid.uid = :uid")
+    List findAllByMasterUid(Long uid);
 
 }
