@@ -1,5 +1,6 @@
-package com.bfriend.bfriend.roomptc;
+package com.bfriend.bfriend.roomptc.service;
 
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.entity.Room;

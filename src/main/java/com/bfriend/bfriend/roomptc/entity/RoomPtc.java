@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.roomptc;
+package com.bfriend.bfriend.roomptc.entity;
 
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.users.entity.Users;

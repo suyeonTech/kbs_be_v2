@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.chatlog;
 
-import com.bfriend.bfriend.roomptc.RoomPtc;
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
