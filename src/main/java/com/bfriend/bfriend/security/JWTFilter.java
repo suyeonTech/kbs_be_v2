@@ -66,7 +66,11 @@ public class JWTFilter extends OncePerRequestFilter {
                 .build();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(UserEntity);
-        return new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        // ✅ 올바른 생성자로 인증 객체 생성 (setAuthenticated(true) 사용 X)
+        Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return authentication;
     }
 
     @Override
