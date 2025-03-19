@@ -77,6 +77,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**","room/detail/**","room/myroom/**").permitAll()
+                .requestMatchers("/users/test").permitAll() // ✅프론트 백 연동 테스트
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         ).exceptionHandling(exception -> exception
