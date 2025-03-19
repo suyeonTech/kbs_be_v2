@@ -86,6 +86,7 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
+
         http
                 .addFilterAt(new LoginFilter(
                         authenticationManager(authenticationConfiguration),
@@ -94,6 +95,9 @@ public class SecurityConfig {
 
         http.sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+//                .securityContext(securityContext -> securityContext
+//                        .requireExplicitSave(false));  // ✅ SecurityContext 자동 저장 활성화
 
         return http.build();
     }
