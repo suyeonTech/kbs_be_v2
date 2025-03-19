@@ -94,10 +94,10 @@ public class SecurityConfig {
                 ), UsernamePasswordAuthenticationFilter.class);
 
         http.sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-//                .securityContext(securityContext -> securityContext
-//                        .requireExplicitSave(false));  // ✅ SecurityContext 자동 저장 활성화
+                .securityContext(securityContext -> securityContext
+                        .requireExplicitSave(false));
 
         return http.build();
     }
