@@ -76,7 +76,7 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**","room/detail/**","room/myroom/**").permitAll()
+                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**", "/health").permitAll()
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         ).exceptionHandling(exception -> exception
@@ -97,7 +97,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .securityContext(securityContext -> securityContext
-                        .requireExplicitSave(false));
+                        .requireExplicitSave(false));git
 
         return http.build();
     }
