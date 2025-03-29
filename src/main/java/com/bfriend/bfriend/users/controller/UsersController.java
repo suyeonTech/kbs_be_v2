@@ -38,4 +38,10 @@ public class UsersController {
     public ResponseEntity<UserDetailResponse> getProfileDetails(@AuthenticationPrincipal CustomUserDetails userDetails){
         return userService.getProfileDetail(userDetails);
     }
+
+    // ✅프론트 백 연동 테스트
+    @GetMapping("/test")
+    public String hello() {
+        return "테스트";
+    }
 }
