@@ -47,15 +47,22 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
             String email = customUserDetails.getUsername();
             String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+            String nickname = customUserDetails.getNickname();
 
             String token = jwtUtil.createJwt(email, role, JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR);
 
             res.addHeader("Authorization", JWTConstants.TOKEN_PREFIX + token);
 
+            Map<String, Object> data = Map.of(
+                    "nickname", nickname
+            );
+
             SuccessResponse successResponse = new SuccessResponse(
                     HttpServletResponse.SC_OK,
-                    "로그인에 성공하셨습니다."
+                    "로그인에 성공하셨습니다.",
+                    data
             );
+
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
             res.getWriter().write(new ObjectMapper().writeValueAsString(successResponse));
