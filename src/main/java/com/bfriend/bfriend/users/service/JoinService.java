@@ -32,12 +32,13 @@ public class JoinService {
         Users users = buildUsers(joinRequest);
         userRepository.save(users);
 
-        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR );
+        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR);
 
+        record SignupResponse(int status, String message, String nickname) {}
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header("Authorization", JWTConstants.TOKEN_PREFIX + token)
-                .body(new SuccessResponse(HttpStatus.CREATED.value(), "회원가입이 완료되었습니다."));
+                .body(new SignupResponse(HttpStatus.CREATED.value(), "회원가입이 완료되었습니다.", joinRequest.getNickname()));
 
     }
 
