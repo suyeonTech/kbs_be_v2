@@ -32,7 +32,7 @@ public class JoinService {
         Users users = buildUsers(joinRequest);
         userRepository.save(users);
 
-        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR * 24); // 24시간 유효한 토큰
+        String token = jwtUtil.createJwt(users.getEmail(), users.getRole(), JWTConstants.TOKEN_VALIDITY_MILLISECONDS_1HOUR);
 
         record SignupResponse(int status, String message, String nickname) {}
         return ResponseEntity
