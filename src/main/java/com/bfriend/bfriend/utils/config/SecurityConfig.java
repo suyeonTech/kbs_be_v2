@@ -98,7 +98,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .securityContext(securityContext -> securityContext
-                        .requireExplicitSave(false));git
+                        .requireExplicitSave(false));
 
         return http.build();
     }

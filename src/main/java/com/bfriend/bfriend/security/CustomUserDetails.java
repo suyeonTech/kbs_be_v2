@@ -1,6 +1,8 @@
 package com.bfriend.bfriend.security;
 
 import com.bfriend.bfriend.users.entity.Users;
+import lombok.Generated;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +41,8 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getEmail();
     }
 
+    public String getNickname() { return userEntity.getNickname(); }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -58,4 +62,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
