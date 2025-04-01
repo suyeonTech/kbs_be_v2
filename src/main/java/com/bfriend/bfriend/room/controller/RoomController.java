@@ -1,18 +1,21 @@
 package com.bfriend.bfriend.room.controller;
 
 import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
+import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.service.RoomService;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/room")
 @RestController
+@Log4j2
 public class RoomController {
     private final RoomService roomService;
 
@@ -39,9 +42,16 @@ public class RoomController {
         return roomService.getRoomDetail(roomId);
   }
 
+  //내 방 상세보기
   @GetMapping("/myroom/{userId}")
   public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
         return roomService.getMyRoomDetail(userId);
+  }
+
+  //모임촌 보기
+  @GetMapping("/village")
+  public ResponseEntity<VillageResponseDTO> getVillage() {
+      return roomService.getVillage();
   }
 
 }
