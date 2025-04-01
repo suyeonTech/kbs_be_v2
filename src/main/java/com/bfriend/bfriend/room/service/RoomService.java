@@ -3,6 +3,7 @@ package com.bfriend.bfriend.room.service;
 
 import com.bfriend.bfriend.room.dto.MyRoomDTO;
 import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
+import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
@@ -68,31 +69,30 @@ public class RoomService {
     }
 
     //모임방 상세보기
-  public RoomDetailResponseDTO getRoomDetail(Long roomId) {
-    Room foundRoom  = roomRepository.findById(roomId)
-        .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
+    public RoomDetailResponseDTO getRoomDetail(Long roomId) {
+        Room foundRoom  = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
 
-    List<Users> participants = roomPtcService.getParticipants(roomId);
-      log.debug("참여자 : {}",participants.size());
+        List<Users> participants = roomPtcService.getParticipants(roomId);
+        log.debug("참여자 : {}",participants.size());
 
-    return RoomDetailResponseDTO.builder()
-        .master(toUserDTO(foundRoom.getMasterUid()))
-        .participants(toUserDTOs(participants))
-        .roomName(foundRoom.getRoomName())
-        .location(foundRoom.getLocation())
-        .restaurant(foundRoom.getRestaurant())
-        .foodType(foundRoom.getFoodType())
-        .meetingTime(foundRoom.getMeetingTime())
-        .isReported(foundRoom.getIsReported())
-        .build();
-  }
+        return RoomDetailResponseDTO.builder()
+                .master(toUserDTO(foundRoom.getMasterUid()))
+                .participants(toUserDTOs(participants))
+                .roomName(foundRoom.getRoomName())
+                .location(foundRoom.getLocation())
+                .restaurant(foundRoom.getRestaurant())
+                .foodType(foundRoom.getFoodType())
+                .meetingTime(foundRoom.getMeetingTime())
+                .isReported(foundRoom.getIsReported())
+                .build();
+    }
 
-  //나와 관련된 방 상세보기
+    //나와 관련된 방 상세보기
     public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId){
         Users master = usersRepository.findByUid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
-        log.debug("방장 : {}", master);
         List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
         log.debug("내가 만든 모임방 : {}",createdRooms.size());
         List<MyRoomDTO> createdDTOs = toRoomDTOs(createdRooms);
@@ -106,6 +106,20 @@ public class RoomService {
                 .createdRooms(createdDTOs)
                 .joinedRooms(joinedDTOs)
                 .build());
+    }
+
+    //모든 모임방(모임촌) 보기
+    public ResponseEntity<VillageResponseDTO> getVillage() {
+        List<Room> allRooms = roomRepository.findAll();
+        log.debug("모임촌에 존재하는 총 모임방 : {}",allRooms.size());
+
+        List<MyRoomDTO> allRoomDTOs = toRoomDTOs(allRooms);
+
+        return ResponseEntity.ok(
+                VillageResponseDTO.builder()
+                        .village(allRoomDTOs)
+                        .build());
+
     }
 
 }
