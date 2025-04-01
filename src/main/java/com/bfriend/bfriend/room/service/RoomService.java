@@ -113,11 +113,11 @@ public class RoomService {
         List<Room> allRooms = roomRepository.findAll();
         log.debug("모임촌에 존재하는 총 모임방 : {}",allRooms.size());
 
-        List<MyRoomDTO> allroomDTOs = toRoomDTOs(allRooms);
+        List<MyRoomDTO> allRoomDTOs = toRoomDTOs(allRooms);
 
         return ResponseEntity.ok(
                 VillageResponseDTO.builder()
-                        .village(allroomDTOs)
+                        .village(allRoomDTOs)
                         .build());
 
     }
