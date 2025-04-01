@@ -23,7 +23,7 @@ public class RoomController {
     @PostMapping("/create")
     public String createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
         Room room = roomService.create(roomCreateDTO);
-        return "room_detail";
+        return "redirect:/room/detail/" + room.getRid();
     }
 
     //모임방 삭제
@@ -33,7 +33,7 @@ public class RoomController {
         if (roomDeleted == 0) { //실패시 오류 페이지 반환
             return "error page";
         }
-        return "room_page"; //성공시 모임촌 페이지 반환
+        return "redirect:/room/village"; //성공시 모임촌 페이지 반환
     }
 
   //상세보기
