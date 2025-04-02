@@ -6,7 +6,9 @@ import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
@@ -18,6 +20,7 @@ import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -119,7 +122,32 @@ public class RoomService {
                 VillageResponseDTO.builder()
                         .village(allRoomDTOs)
                         .build());
+    }
 
+    //모임방 참여하기
+    public ResponseEntity joinRoom(CustomUserDetails customUserDetails, Long roomId){
+        String email = customUserDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        Room room = roomRepository.findOptionalByRid(roomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
+
+        if(room.getJoinPtc() >= room.getMaxPtc()){
+            return ResponseEntity.ok("인원 초과로 인해 참여가 불가합니다.");
+        }
+
+        RoomPtc roomPtc = RoomPtc.builder()
+                .uid(user)
+                .rid(room)
+                .build();
+        roomPtcRopository.save(roomPtc);
+
+        room.setJoinPtc(room.getJoinPtc() + 1);
+        roomRepository.save(room);
+
+        return ResponseEntity.ok("참여가 완료되었습니다.");
     }
 
 }

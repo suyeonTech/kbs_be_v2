@@ -7,9 +7,11 @@ import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -54,4 +56,9 @@ public class RoomController {
         return roomService.getVillage();
     }
 
+    //모임방 참여하기
+    @PostMapping("/join/{roomId}")
+    public ResponseEntity joinRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
+        return roomService.joinRoom(userDetails, roomId);
+    }
 }
