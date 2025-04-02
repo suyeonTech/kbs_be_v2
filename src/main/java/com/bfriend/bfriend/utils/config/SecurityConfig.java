@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -44,7 +45,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder, RedisTemplate<String, String> stringRedisTemplate) throws Exception {
 
         http
                 .cors((cors) -> cors
@@ -85,8 +86,7 @@ public class SecurityConfig {
         );;
 
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
-
+                .addFilterBefore(new JWTFilter(stringRedisTemplate, jwtUtil), LoginFilter.class);
 
         http
                 .addFilterAt(new LoginFilter(
