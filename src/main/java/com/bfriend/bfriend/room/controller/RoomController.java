@@ -8,10 +8,6 @@ import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.security.CustomUserDetails;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
-import com.bfriend.bfriend.utils.exceptions.BusinessException;
-import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -28,7 +24,6 @@ import java.util.Map;
 @Log4j2
 public class RoomController {
     private final RoomService roomService;
-    private final UsersRepository usersRepository;
 
     //모임방 생성
     @PostMapping("/create")
@@ -53,22 +48,27 @@ public class RoomController {
 
     }
 
-  //상세보기
-  @GetMapping("/detail/{roomId}")
-  public RoomDetailResponseDTO getBoardDetail(@PathVariable Long roomId) {
+    //상세보기
+    @GetMapping("/detail/{roomId}")
+    public RoomDetailResponseDTO getBoardDetail(@PathVariable Long roomId) {
         return roomService.getRoomDetail(roomId);
-  }
+    }
 
-  //내 방 상세보기
-  @GetMapping("/myroom/{userId}")
-  public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
+    //내 방 상세보기
+    @GetMapping("/myroom/{userId}")
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
         return roomService.getMyRoomDetail(userId);
-  }
+    }
 
-  //모임촌 보기
-  @GetMapping("/village")
-  public ResponseEntity<VillageResponseDTO> getVillage() {
-      return roomService.getVillage();
-  }
+    //모임촌 보기
+    @GetMapping("/village")
+    public ResponseEntity<VillageResponseDTO> getVillage() {
+        return roomService.getVillage();
+    }
 
+    //모임방 참여하기
+    @PostMapping("/join/{roomId}")
+    public ResponseEntity joinRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
+        return roomService.joinRoom(userDetails, roomId);
+    }
 }
