@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class RoomCreateDTO {
     //isReported의 초기값 0, joinPtc의 초기값 1로 전달값 불필요
 
-    private final Users uid;
 
     private final LocalDateTime meetingTime;
 

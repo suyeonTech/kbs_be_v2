@@ -37,10 +37,10 @@ public class RoomService {
     private final RoomPtcRopository roomPtcRopository;
 
     //모임방 생성
-    public Room create(RoomCreateDTO roomCreateDTO) {
+    public Room create(Users user, RoomCreateDTO roomCreateDTO) {
         //roomCreateDTO를 사용하여 room객체 생성
         Room room = Room.builder()
-                .masterUid(roomCreateDTO.getUid())
+                .masterUid(user)
                 .meetingTime(roomCreateDTO.getMeetingTime())
                 .roomName(roomCreateDTO.getRoomName())
                 .location(roomCreateDTO.getLocation())
