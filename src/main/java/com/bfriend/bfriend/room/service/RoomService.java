@@ -8,6 +8,7 @@ import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
 import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;

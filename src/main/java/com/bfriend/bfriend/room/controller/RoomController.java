@@ -9,8 +9,12 @@ import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping(value = "/room")
@@ -21,9 +25,14 @@ public class RoomController {
 
     //모임방 생성
     @PostMapping("/create")
-    public String createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
+    public ResponseEntity<Map<String, Object>> createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
         Room room = roomService.create(roomCreateDTO);
-        return "redirect:/room/detail/" + room.getRid();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "모임방 생성 성공");
+        response.put("roomId", room.getRid());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //모임방 삭제
