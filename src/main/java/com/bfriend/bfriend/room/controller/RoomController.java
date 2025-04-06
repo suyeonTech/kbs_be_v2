@@ -8,10 +8,17 @@ import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.exceptions.BusinessException;
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,11 +67,11 @@ public class RoomController {
         return roomService.getMyRoomDetail(userId);
     }
 
-    //모임촌 보기
-    @GetMapping("/village")
-    public ResponseEntity<VillageResponseDTO> getVillage() {
-        return roomService.getVillage();
-    }
+  //모임촌 보기
+  @GetMapping("/village")
+  public ResponseEntity<VillageResponseDTO> getVillage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+      return roomService.getVillage(customUserDetails);
+  }
 
     //모임방 참여하기
     @PostMapping("/join/{roomId}")
