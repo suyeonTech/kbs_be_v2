@@ -12,6 +12,7 @@ import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.exceptions.ErrorResponse;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
@@ -23,7 +24,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
 
@@ -117,7 +121,12 @@ public class RoomService {
     }
 
     //모든 모임방(모임촌) 보기
-    public ResponseEntity<VillageResponseDTO> getVillage() {
+    public ResponseEntity<VillageResponseDTO> getVillage(CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getUsername();
+
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_EMAILNOTFOUND));
+
         List<Room> allRooms = roomRepository.findAll();
         log.debug("모임촌에 존재하는 총 모임방 : {}",allRooms.size());
 
@@ -126,6 +135,7 @@ public class RoomService {
         return ResponseEntity.ok(
                 VillageResponseDTO.builder()
                         .village(allRoomDTOs)
+                        .uid(users.getUid())
                         .build());
 
     }
