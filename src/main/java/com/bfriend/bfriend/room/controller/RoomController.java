@@ -58,22 +58,26 @@ public class RoomController {
         return "redirect:/room/village"; //성공시 모임촌 페이지 반환
     }
 
-  //상세보기
-  @GetMapping("/detail/{roomId}")
-  public RoomDetailResponseDTO getBoardDetail(@PathVariable Long roomId) {
+    //상세보기
+    @GetMapping("/detail/{roomId}")
+    public RoomDetailResponseDTO getBoardDetail(@PathVariable Long roomId) {
         return roomService.getRoomDetail(roomId);
-  }
+    }
 
-  //내 방 상세보기
-  @GetMapping("/myroom/{userId}")
-  public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
+    //내 방 상세보기
+    @GetMapping("/myroom/{userId}")
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
         return roomService.getMyRoomDetail(userId);
-  }
+    }
 
-  //모임촌 보기
-  @GetMapping("/village")
-  public ResponseEntity<VillageResponseDTO> getVillage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-      return roomService.getVillage(customUserDetails);
-  }
+    //모임촌 보기
+    @GetMapping("/village")
+    public ResponseEntity<VillageResponseDTO> getVillage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return roomService.getVillage(customUserDetails);
+    }
 
+    @GetMapping("/participation/check")
+    public ResponseEntity<?> checkParticipation(@RequestParam Long roomId, @RequestParam Long userId) {
+        return roomService.checkParticipation(roomId, userId);
+    }
 }
