@@ -111,11 +111,11 @@ public class RoomService {
 
     //모임방 상세보기
     public RoomDetailResponseDTO getRoomDetail(Long roomId) {
-        Room foundRoom  = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
+        Room foundRoom = roomRepository.findById(roomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND, roomId.toString()));
 
         List<Users> participants = roomPtcService.getParticipants(roomId);
-        log.debug("참여자 : {}",participants.size());
+        log.debug("참여자 : {}", participants.size());
 
         return RoomDetailResponseDTO.builder()
                 .master(toUserDTO(foundRoom.getMasterUid()))
@@ -130,23 +130,23 @@ public class RoomService {
     }
 
     //나와 관련된 방 상세보기
-    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId){
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId) {
         Users master = usersRepository.findByUid(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
         List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
-        log.debug("내가 만든 모임방 : {}",createdRooms.size());
+        log.debug("내가 만든 모임방 : {}", createdRooms.size());
         List<MyRoomDTO> createdDTOs = toRoomDTOs(createdRooms);
 
         List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
-        log.debug("내가 참여한 모임방 : {}",joinedRooms.size());
+        log.debug("내가 참여한 모임방 : {}", joinedRooms.size());
         List<MyRoomDTO> joinedDTOs = toRoomDTOs(joinedRooms);
 
         return ResponseEntity.ok(
                 MyRoomDetailResponseDTO.builder()
-                .createdRooms(createdDTOs)
-                .joinedRooms(joinedDTOs)
-                .build());
+                        .createdRooms(createdDTOs)
+                        .joinedRooms(joinedDTOs)
+                        .build());
     }
 
     //모든 모임방(모임촌) 보기
@@ -157,7 +157,7 @@ public class RoomService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USERS_EMAILNOTFOUND));
 
         List<Room> allRooms = roomRepository.findAll();
-        log.debug("모임촌에 존재하는 총 모임방 : {}",allRooms.size());
+        log.debug("모임촌에 존재하는 총 모임방 : {}", allRooms.size());
 
         List<MyRoomDTO> allRoomDTOs = toRoomDTOs(allRooms);
 
@@ -200,4 +200,10 @@ public class RoomService {
         return ResponseEntity.ok("참여가 완료되었습니다.");
     }
 
+    public ResponseEntity<?> checkParticipation(Long roomId, Long userId) {
+        boolean isParticipating = roomPtcRopository.existsByRid_RidAndUid_Uid(roomId, userId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isParticipating", isParticipating);
+        return ResponseEntity.ok(response);
+    }
 }

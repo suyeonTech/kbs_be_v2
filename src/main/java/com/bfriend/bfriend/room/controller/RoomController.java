@@ -31,6 +31,7 @@ import java.util.Map;
 @Log4j2
 public class RoomController {
     private final RoomService roomService;
+    private final UsersRepository usersRepository;
 
     //모임방 생성
     @PostMapping("/create")
@@ -67,15 +68,19 @@ public class RoomController {
         return roomService.getMyRoomDetail(userId);
     }
 
-  //모임촌 보기
-  @GetMapping("/village")
-  public ResponseEntity<VillageResponseDTO> getVillage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-      return roomService.getVillage(customUserDetails);
-  }
+    //모임촌 보기
+    @GetMapping("/village")
+    public ResponseEntity<VillageResponseDTO> getVillage(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return roomService.getVillage(customUserDetails);
+    }
 
     //모임방 참여하기
     @PostMapping("/join/{roomId}")
     public ResponseEntity joinRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
         return roomService.joinRoom(userDetails, roomId);
+    }
+    @GetMapping("/participation/check")
+    public ResponseEntity<?> checkParticipation(@RequestParam Long roomId, @RequestParam Long userId) {
+        return roomService.checkParticipation(roomId, userId);
     }
 }
