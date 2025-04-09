@@ -7,7 +7,9 @@ import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -36,10 +38,16 @@ public class RoomService {
     private final RoomPtcRopository roomPtcRopository;
 
     //모임방 생성
-    public Room create(RoomCreateDTO roomCreateDTO) {
+    public Room create(CustomUserDetails userDetails, RoomCreateDTO roomCreateDTO) {
+
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
         //roomCreateDTO를 사용하여 room객체 생성
         Room room = Room.builder()
-                .masterUid(roomCreateDTO.getUid())
+                .masterUid(user)
                 .meetingTime(roomCreateDTO.getMeetingTime())
                 .roomName(roomCreateDTO.getRoomName())
                 .location(roomCreateDTO.getLocation())
