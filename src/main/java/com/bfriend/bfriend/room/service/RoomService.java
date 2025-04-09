@@ -7,6 +7,7 @@ import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
@@ -58,7 +59,13 @@ public class RoomService {
 
 
     @Transactional
-    public ResponseEntity<Object> delete(Users user, Long rid) {
+    public ResponseEntity<Object> delete(CustomUserDetails userDetails, Long rid) {
+
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
         Room room = roomRepository.findByRid(rid);
         System.out.println("roomId = " + rid);
 

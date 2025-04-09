@@ -38,12 +38,7 @@ public class RoomController {
     @PostMapping("/delete")
     public ResponseEntity<Object> deleteRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody RoomDeleteDTO roomDeleteDTO)
     {
-        String email = userDetails.getUsername();
-
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
-
-        return roomService.delete(user, roomDeleteDTO.getRid());
+        return roomService.delete(userDetails, roomDeleteDTO.getRid());
     }
 
   //상세보기
