@@ -17,6 +17,9 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(BAD_REQUEST, "AUTH_002", "입력값이 유효하지 않습니다."),
     INVALID_CREDENTIALS(UNAUTHORIZED, "AUTH_003", "이메일 또는 비밀번호가 잘못되었습니다."),
     AUTHENTICATION_FAILED(UNAUTHORIZED, "AUTH_004", "인증에 실패하였습니다."),
+    AUTHENTICATION_HEADER_MISSING(UNAUTHORIZED, "AUTH_005", "Authorization 헤더가 없습니다."),
+    TOKEN_EXPIRED(UNAUTHORIZED, "AUTH_006", "토큰이 만료되었습니다."),
+    LOGOUT_TOKEN_USED(UNAUTHORIZED, "AUTH_007", "로그아웃된 토큰입니다."),
 
     //ROOM
     ROOM_NOTFOUND(BAD_REQUEST, "ROOM_001", "존재하지 않는 모임방입니다."),

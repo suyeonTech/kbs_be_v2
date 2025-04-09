@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationServiceException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationServiceException(AuthenticationServiceException ex) {
-        ErrorCode errorCode = ErrorCode.AUTHENTICATION_FAILED;
+        ErrorCode errorCode = ErrorCode.AUTHENTICATION_HEADER_MISSING;
         return buildErrorResponse(errorCode, null);
     }
 }
