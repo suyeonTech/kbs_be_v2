@@ -36,13 +36,7 @@ public class RoomController {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody RoomCreateDTO roomCreateDTO) {
 
-        String email = userDetails.getUsername();
-
-        Users user = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
-
-
-        Room room = roomService.create(user, roomCreateDTO);
+        Room room = roomService.create(userDetails, roomCreateDTO);
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "모임방 생성 성공");
