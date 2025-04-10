@@ -89,10 +89,9 @@ public class JWTFilter extends OncePerRequestFilter {
                 ||request.getRequestURI().startsWith("/h2-consoleb")
                 ||request.getRequestURI().equals("/favicon.ico")
                 || request.getRequestURI().equals("/health")
-                || request.getRequestURI().equals("/users/checkemail")
-                || request.getRequestURI().equals("/users/findpw")
-                || request.getRequestURI().equals("/users/changepw")
-                ||request.getRequestURI().startsWith("/room")
+//                || request.getRequestURI().equals("/users/checkemail")
+//                || request.getRequestURI().equals("/users/findpw")
+//                || request.getRequestURI().equals("/users/changepw")
                 || request.getRequestURI().equals("/users/test"); // ✅프론트 백 연동 테스트
     }
 }
