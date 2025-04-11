@@ -47,12 +47,10 @@ public class RoomController {
 
     //모임방 삭제
     @PostMapping("/delete")
-    public String deleteRoom(@RequestBody RoomDeleteDTO roomDeleteDTO) {
-        int roomDeleted = roomService.delete(roomDeleteDTO); //성공 시 roomDeleted=1, 실패시 0
-        if (roomDeleted == 0) { //실패시 오류 페이지 반환
-            return "error page";
-        }
-        return "redirect:/room/village"; //성공시 모임촌 페이지 반환
+    public ResponseEntity<Object> deleteRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody RoomDeleteDTO roomDeleteDTO)
+    {
+        return roomService.delete(userDetails, roomDeleteDTO.getRid());
+
     }
 
   //상세보기
