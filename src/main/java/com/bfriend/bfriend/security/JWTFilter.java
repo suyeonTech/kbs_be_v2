@@ -2,11 +2,14 @@ package com.bfriend.bfriend.security;
 
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.utils.constants.JWTConstants;
+import com.bfriend.bfriend.utils.exceptions.BusinessException;
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,12 +21,19 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
+    private final RedisTemplate<String, String> redisTemplate;
     private final JWTUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = extractToken(request);
+
+            String isLogout = redisTemplate.opsForValue().get(token);
+            if ("logout".equals(isLogout)) {
+                throw new BusinessException(ErrorCode.LOGOUT_TOKEN_USED);
+            }
+
             Authentication authentication = createAuthenticationFromToken(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (AuthenticationException ex) {
@@ -38,12 +48,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith(JWTConstants.TOKEN_PREFIX)) {
-            throw new AuthenticationServiceException("Authorization 헤더가 소실되었거나 유효하지 않습니다.");
+            throw new BusinessException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
         }
 
         String[] parts = authorization.split(" ");
         if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new AuthenticationServiceException("토큰이 없거나 소실되었습니다.");
+            throw new BusinessException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
         }
 
         String token = parts[1];

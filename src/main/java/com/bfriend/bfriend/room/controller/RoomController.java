@@ -19,6 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RequestMapping(value = "/room")
 @RestController
@@ -29,9 +32,17 @@ public class RoomController {
 
     //모임방 생성
     @PostMapping("/create")
-    public String createRoom(@RequestBody RoomCreateDTO roomCreateDTO) {
-        Room room = roomService.create(roomCreateDTO);
-        return "room_detail";
+    public ResponseEntity<Map<String, Object>> createRoom(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody RoomCreateDTO roomCreateDTO) {
+
+        Room room = roomService.create(userDetails, roomCreateDTO);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "모임방 생성 성공");
+        response.put("roomId", room.getRid());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     //모임방 삭제
@@ -39,6 +50,7 @@ public class RoomController {
     public ResponseEntity<Object> deleteRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody RoomDeleteDTO roomDeleteDTO)
     {
         return roomService.delete(userDetails, roomDeleteDTO.getRid());
+
     }
 
   //상세보기
