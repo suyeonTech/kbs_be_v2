@@ -178,7 +178,7 @@ public class RoomService {
                 .build();
         roomPtcRopository.save(roomPtc);
 
-        room.setJoinPtc(room.getJoinPtc() + 1);
+        room.addPtc();
         roomRepository.save(room);
 
         return ResponseEntity.ok("참여가 완료되었습니다.");
