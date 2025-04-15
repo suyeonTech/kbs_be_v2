@@ -16,4 +16,7 @@ public interface RoomPtcRopository extends JpaRepository<RoomPtc, Long> {
 
     @Query("SELECT rp.rid FROM RoomPtc rp WHERE rp.uid.uid = :uid")
     List findAllByUid(Long uid);
+
+    @Query("SELECT COUNT(rp) > 0 FROM RoomPtc rp WHERE rp.rid.rid = :roomId AND rp.uid.uid = :userId")
+    boolean isParticipating(@Param("userId") Long userId, @Param("roomId") Long roomId);
 }

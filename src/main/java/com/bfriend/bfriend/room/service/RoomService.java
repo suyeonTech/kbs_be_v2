@@ -168,6 +168,12 @@ public class RoomService {
         Room room = roomRepository.findOptionalByRid(roomId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
 
+        //방장이거나, 참여한 모임방일 경우
+        if(roomPtcRopository.isParticipating(user.getUid(), roomId)){
+            return ResponseEntity.ok("이미 참여한 모임방입니다.");
+        }
+
+        //인원초과
         if(room.getJoinPtc() >= room.getMaxPtc()){
             return ResponseEntity.ok("인원 초과로 인해 참여가 불가합니다.");
         }
