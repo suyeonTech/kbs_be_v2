@@ -26,6 +26,8 @@ public class GlobalExceptionHandler {
     // 비즈니스 로직 예외 처리
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessExceptions(BusinessException ex) {
+
+        System.out.println("global exception handler");
         return buildErrorResponse(ex.getErrorCode(), null);
     }
 
