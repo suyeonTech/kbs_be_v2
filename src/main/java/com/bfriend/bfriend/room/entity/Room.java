@@ -38,6 +38,8 @@ public class Room {
 
     private Integer joinPtc;
 
-
+    public void addPtc() {
+        this.joinPtc++;
+    }
 
 }

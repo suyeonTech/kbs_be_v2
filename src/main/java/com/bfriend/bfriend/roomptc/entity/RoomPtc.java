@@ -3,10 +3,16 @@ package com.bfriend.bfriend.roomptc.entity;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoomPtc {
 
     @Id

@@ -6,8 +6,11 @@ import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -16,8 +19,10 @@ import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.users.entity.Users;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +41,16 @@ public class RoomService {
     private final RoomPtcRopository roomPtcRopository;
 
     //모임방 생성
-    public Room create(RoomCreateDTO roomCreateDTO) {
+    public Room create(CustomUserDetails userDetails, RoomCreateDTO roomCreateDTO) {
+
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
         //roomCreateDTO를 사용하여 room객체 생성
         Room room = Room.builder()
-                .masterUid(roomCreateDTO.getUid())
+                .masterUid(user)
                 .meetingTime(roomCreateDTO.getMeetingTime())
                 .roomName(roomCreateDTO.getRoomName())
                 .location(roomCreateDTO.getLocation())
@@ -54,13 +65,39 @@ public class RoomService {
         return room; //room객체 반환
     }
 
-    //모임방 삭제. 성공시 1, 실패시 0 반환
-    public int delete(RoomDeleteDTO roomDeleteDTO) {
-        roomRepository.delete(roomRepository.findByRid(roomDeleteDTO.getRid()));
-        if (roomRepository.findByRid(roomDeleteDTO.getRid()) != null) { //삭제 시도한 데이터가 아직 남아있으면 오류처리
-            return 0;
+
+    @Transactional
+    public ResponseEntity<Object> delete(CustomUserDetails userDetails, Long rid) {
+
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        Room room = roomRepository.findByRid(rid);
+        System.out.println("roomId = " + rid);
+
+        if (room == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("모임방이 존재하지 않습니다.");
         }
-        return 1; //성공시
+
+        if (!isUserRoomMaster(user, room)) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("모임방 삭제 권한이 없습니다.");
+
+        }
+
+        roomRepository.delete(room);
+
+        boolean exists = roomRepository.existsById(rid);
+        if (exists) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("모임방 삭제 실패");
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 삭제 성공 (204 No Content)
+    }
+
+    public boolean isUserRoomMaster(Users user, Room room) {
+        return (room.getMasterUid().equals(user));
     }
 
     //검색 키워드로 검색결과를 찾아 리스트로 반환
@@ -119,7 +156,38 @@ public class RoomService {
                 VillageResponseDTO.builder()
                         .village(allRoomDTOs)
                         .build());
+    }
 
+    //모임방 참여하기
+    public ResponseEntity joinRoom(CustomUserDetails customUserDetails, Long roomId){
+        String email = customUserDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        Room room = roomRepository.findOptionalByRid(roomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
+
+        //방장이거나, 참여한 모임방일 경우
+        if(roomPtcRopository.isParticipating(user.getUid(), roomId)){
+            return ResponseEntity.ok("이미 참여한 모임방입니다.");
+        }
+
+        //인원초과
+        if(room.getJoinPtc() >= room.getMaxPtc()){
+            return ResponseEntity.ok("인원 초과로 인해 참여가 불가합니다.");
+        }
+
+        RoomPtc roomPtc = RoomPtc.builder()
+                .uid(user)
+                .rid(room)
+                .build();
+        roomPtcRopository.save(roomPtc);
+
+        room.addPtc();
+        roomRepository.save(room);
+
+        return ResponseEntity.ok("참여가 완료되었습니다.");
     }
 
 }

@@ -1,7 +1,6 @@
 package com.bfriend.bfriend.room.repository;
 
 import com.bfriend.bfriend.room.entity.Room;
-import com.bfriend.bfriend.users.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,5 +27,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List findAllByMasterUid(Long uid);
 
     List findAll();
+
+    Optional<Room> findOptionalByRid(Long rid);
+
 
 }
