@@ -71,4 +71,10 @@ public class RoomController {
     public ResponseEntity joinRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
         return roomService.joinRoom(userDetails, roomId);
     }
+
+    //모임방 나가기
+    @PostMapping("/exit/{roomId}")
+    public ResponseEntity exitRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
+        return roomService.exitRoom(userDetails, roomId);
+    }
 }
