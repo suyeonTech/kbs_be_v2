@@ -11,5 +11,4 @@ import java.util.List;
 @Builder
 public class VillageResponseDTO {
     List<MyRoomDTO> village;
-    Long uid;
 }

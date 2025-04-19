@@ -2,24 +2,21 @@ package com.bfriend.bfriend.room.service;
 
 
 import com.bfriend.bfriend.room.dto.MyRoomDTO;
+import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
+import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
-import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
-import com.bfriend.bfriend.utils.exceptions.ErrorResponse;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
-import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
-import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
-import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
-import com.bfriend.bfriend.roomptc.service.RoomPtcService;
-import com.bfriend.bfriend.users.entity.Users;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
 
@@ -150,12 +146,7 @@ public class RoomService {
     }
 
     //모든 모임방(모임촌) 보기
-    public ResponseEntity<VillageResponseDTO> getVillage(CustomUserDetails customUserDetails) {
-        String email = customUserDetails.getUsername();
-
-        Users users = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_EMAILNOTFOUND));
-
+    public ResponseEntity<VillageResponseDTO> getVillage() {
         List<Room> allRooms = roomRepository.findAll();
         log.debug("모임촌에 존재하는 총 모임방 : {}", allRooms.size());
 
@@ -164,12 +155,25 @@ public class RoomService {
         return ResponseEntity.ok(
                 VillageResponseDTO.builder()
                         .village(allRoomDTOs)
-                        .uid(users.getUid())
                         .build());
     }
 
+    public ResponseEntity<?> checkParticipation(CustomUserDetails customUserDetails, Long roomId) {
+        Users users = null;
+        if (customUserDetails != null) {
+            String email = customUserDetails.getUsername();
+            users = usersRepository.findByEmail(email)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.USERS_EMAILNOTFOUND));
+        }
+
+        boolean isParticipating = roomPtcRopository.existsByRid_RidAndUid_Uid(roomId, users.getUid());
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("isParticipating", isParticipating);
+        return ResponseEntity.ok(response);
+    }
+
     //모임방 참여하기
-    public ResponseEntity joinRoom(CustomUserDetails customUserDetails, Long roomId){
+    public ResponseEntity joinRoom(CustomUserDetails customUserDetails, Long roomId) {
         String email = customUserDetails.getUsername();
 
         Users user = usersRepository.findByEmail(email)
@@ -179,12 +183,12 @@ public class RoomService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
 
         //방장이거나, 참여한 모임방일 경우
-        if(roomPtcRopository.isParticipating(user.getUid(), roomId)){
+        if (roomPtcRopository.isParticipating(user.getUid(), roomId)) {
             return ResponseEntity.ok("이미 참여한 모임방입니다.");
         }
 
         //인원초과
-        if(room.getJoinPtc() >= room.getMaxPtc()){
+        if (room.getJoinPtc() >= room.getMaxPtc()) {
             return ResponseEntity.ok("인원 초과로 인해 참여가 불가합니다.");
         }
 
@@ -198,12 +202,5 @@ public class RoomService {
         roomRepository.save(room);
 
         return ResponseEntity.ok("참여가 완료되었습니다.");
-    }
-
-    public ResponseEntity<?> checkParticipation(Long roomId, Long userId) {
-        boolean isParticipating = roomPtcRopository.existsByRid_RidAndUid_Uid(roomId, userId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("isParticipating", isParticipating);
-        return ResponseEntity.ok(response);
     }
 }
