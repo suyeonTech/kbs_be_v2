@@ -203,7 +203,7 @@ public class RoomService {
 
         //참여한 적이 없는 경우
         if(!roomPtcRopository.isParticipating(user.getUid(), roomId)){
-            return ResponseEntity.ok("참여한 적이 없는 모임방입니다.");
+            return ResponseEntity.ok("참여한 모임방이 아닙니다.");
         }
 
         room.deletePtc();
