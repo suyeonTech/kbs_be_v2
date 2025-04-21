@@ -159,6 +159,7 @@ public class RoomService {
     }
 
     //모임방 참여하기
+    @Transactional
     public ResponseEntity joinRoom(CustomUserDetails customUserDetails, Long roomId){
         String email = customUserDetails.getUsername();
 
@@ -185,9 +186,30 @@ public class RoomService {
         roomPtcRopository.save(roomPtc);
 
         room.addPtc();
-        roomRepository.save(room);
 
         return ResponseEntity.ok("참여가 완료되었습니다.");
+    }
+
+    //모임방 나가기
+    @Transactional
+    public ResponseEntity exitRoom(CustomUserDetails customUserDetails, Long roomId){
+        String email = customUserDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        Room room = roomRepository.findOptionalByRid(roomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
+
+        //참여한 적이 없는 경우
+        if(!roomPtcRopository.isParticipating(user.getUid(), roomId)){
+            return ResponseEntity.ok("참여한 모임방이 아닙니다.");
+        }
+
+        room.deletePtc();
+        roomPtcRopository.deleteByRoomIdAndUserId(user.getUid(), roomId);
+
+        return ResponseEntity.ok("모임방 나가기 성공!");
     }
 
 }

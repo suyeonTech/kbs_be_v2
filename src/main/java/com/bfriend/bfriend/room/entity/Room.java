@@ -42,4 +42,8 @@ public class Room {
         this.joinPtc++;
     }
 
+    public void deletePtc(){
+        this.joinPtc--;
+    }
+
 }
