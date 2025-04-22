@@ -1,5 +1,8 @@
 package com.bfriend.bfriend.roomptc.service;
 
+import com.bfriend.bfriend.roomptc.dto.ExitRoomDTO;
+import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -9,6 +12,7 @@ import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.users.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,5 +36,18 @@ public class RoomPtcService {
         }
         // null 대신 빈 리스트 반환
         return participants;
+    }
+
+    public ResponseEntity<Object> userParticipateRoom(ParticipateRoomDTO participateRoomDTO) {
+        RoomPtc roomPtc = RoomPtc.builder()
+                .rid(participateRoomDTO.getRoom())
+                .uid(participateRoomDTO.getUser())
+                .build();
+        roomPtcRopository.save(roomPtc);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Object> userExitRoom(ExitRoomDTO exitRoomDTO) {
+        return ResponseEntity.ok().build();
     }
 }

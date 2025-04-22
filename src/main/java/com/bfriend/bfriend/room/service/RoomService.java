@@ -6,6 +6,7 @@ import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
 import com.bfriend.bfriend.security.CustomUserDetails;
@@ -62,6 +63,11 @@ public class RoomService {
                 .build();
 
         roomRepository.save(room); //DB에 저장
+        ParticipateRoomDTO participateRoomDTO = ParticipateRoomDTO.builder()
+                .room(room)
+                .user(user)
+                .build();
+        roomPtcService.userParticipateRoom(participateRoomDTO);
         return room; //room객체 반환
     }
 
