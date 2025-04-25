@@ -10,6 +10,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class ParticipateRoomDTO {
-    private Room room;
-    private Users user;
+    private final Room room;
+    private final Users user;
 }

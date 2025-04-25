@@ -25,4 +25,5 @@ public interface RoomPtcRopository extends JpaRepository<RoomPtc, Long> {
     @Query("DELETE FROM RoomPtc rp WHERE rp.rid.rid = :roomId AND rp.uid.uid = :userId")
     void deleteByRoomIdAndUserId(@Param("userId") Long userId, @Param("roomId") Long roomId);
 
+    List<RoomPtc> findByRid(Room room);
 }
