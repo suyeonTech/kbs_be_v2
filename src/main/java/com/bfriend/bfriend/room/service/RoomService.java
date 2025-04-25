@@ -14,9 +14,11 @@ import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
+import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -185,12 +187,16 @@ public class RoomService {
 
         //방장이거나, 참여한 모임방일 경우
         if (roomPtcRopository.isParticipating(user.getUid(), roomId)) {
-            return ResponseEntity.ok("이미 참여한 모임방입니다.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseDTO.builder().message("이미 참여한 모임방입니다.").build());
         }
 
         //인원초과
         if (room.getJoinPtc() >= room.getMaxPtc()) {
-            return ResponseEntity.ok("인원 초과로 인해 참여가 불가합니다.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseDTO.builder().message("인원 초과로 인해 참여가 불가합니다.").build());
         }
 
         RoomPtc roomPtc = RoomPtc.builder()
@@ -201,7 +207,7 @@ public class RoomService {
 
         room.addPtc();
 
-        return ResponseEntity.ok("참여가 완료되었습니다.");
+        return ResponseEntity.ok(ResponseDTO.builder().message("참여가 완료되었습니다.").build());
     }
 
     //모임방 나가기
@@ -217,13 +223,15 @@ public class RoomService {
 
         //참여한 적이 없는 경우
         if(!roomPtcRopository.isParticipating(user.getUid(), roomId)){
-            return ResponseEntity.ok("참여한 모임방이 아닙니다.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(ResponseDTO.builder().message("참여한 모임방이 아닙니다.").build());
         }
 
         room.deletePtc();
         roomPtcRopository.deleteByRoomIdAndUserId(user.getUid(), roomId);
 
-        return ResponseEntity.ok("모임방 나가기 성공!");
+        return ResponseEntity.ok(ResponseDTO.builder().message("모임방 나가기 성공!").build());
     }
 
 }
