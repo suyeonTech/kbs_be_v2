@@ -3,12 +3,11 @@ package com.bfriend.bfriend.friendlist;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import com.bfriend.bfriend.friendlist.dto.request.UserIdRequest;
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +23,8 @@ public class FriendListContoller {
         return friendListService.addFriend(request);
     }
 
-    @PostMapping("/list")
-    public ResponseEntity<List<FriendsListResponse>> showFriendsList(@RequestBody UserIdRequest request) {
-        return friendListService.showFriendsList(request.getUid());
+    @GetMapping("/list")
+    public ResponseEntity<List<FriendsListResponse>> showFriendsList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return friendListService.showFriendsList(customUserDetails);
     }
 }
