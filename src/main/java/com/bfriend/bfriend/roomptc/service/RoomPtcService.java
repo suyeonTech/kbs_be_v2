@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.roomptc.service;
 
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.entity.Room;
@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 public class RoomPtcService {
 
-    private final RoomPtcRopository roomPtcRopository;
+    private final RoomPtcRepository roomPtcRopository;
     private final RoomRepository roomRepository;
 
     public List<Users> getParticipants(Long roomId){

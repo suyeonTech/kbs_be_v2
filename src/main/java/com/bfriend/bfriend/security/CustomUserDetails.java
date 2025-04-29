@@ -14,6 +14,10 @@ public class CustomUserDetails implements UserDetails {
 
     private final Users userEntity;
 
+    public Users getUserEntity() {
+        return this.userEntity;
+    }
+
     // Role값 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

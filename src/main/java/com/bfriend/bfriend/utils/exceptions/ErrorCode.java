@@ -27,7 +27,12 @@ public enum ErrorCode {
     // USERS
     USERS_EMAILNOTFOUND(BAD_REQUEST, "USERS_001", "존재하지 않는 이메일입니다."),
     USERS_AUTHENTICIATIONNUMBERNOTFOUND(BAD_REQUEST, "USERS_002", "이메일 인증 번호가 맞지 않습니다."),
-    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_003", "존재하지 않는 사용자 ID입니다.");
+    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_003", "존재하지 않는 사용자 ID입니다."),
+    USERS_DUPLICATED(BAD_REQUEST, "USERS_004", "이미 초대 된 친구입니다."),
+
+    // INVITE
+    INVITE_NOTFOUND_OR_NOT_AUTHORIZED(BAD_REQUEST, "INVITE_001", "해당 초대가 존재하지 않거나 권한이 없습니다."),
+    INVITE_ALREADY_HANDLED(BAD_REQUEST, "INVITE_002", "이미 처리된 초대입니다."),;
 
     private final HttpStatus status;
     private final String code;

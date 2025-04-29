@@ -7,15 +7,13 @@ import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
 import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
-import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
-import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.users.entity.Users;
@@ -38,7 +36,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomPtcService roomPtcService;
     private final UsersRepository usersRepository;
-    private final RoomPtcRopository roomPtcRopository;
+    private final RoomPtcRepository roomPtcRopository;
 
     //모임방 생성
     public Room create(CustomUserDetails userDetails, RoomCreateDTO roomCreateDTO) {

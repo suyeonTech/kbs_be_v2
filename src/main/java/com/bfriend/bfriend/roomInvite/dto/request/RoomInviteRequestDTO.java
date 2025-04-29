@@ -6,5 +6,5 @@ import lombok.Getter;
 public class RoomInviteRequestDTO {
     private Long inviterId;
     private Long rid;
-    private Long friendId;  //각 변수 목적
+    private Long friendId;
 }
