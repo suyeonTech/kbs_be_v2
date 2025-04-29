@@ -1,6 +1,5 @@
 package com.bfriend.bfriend.roomptc.service;
 
-import com.bfriend.bfriend.roomptc.dto.ExitRoomDTO;
 import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
@@ -47,7 +46,4 @@ public class RoomPtcService {
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Object> userExitRoom(ExitRoomDTO exitRoomDTO) {
-        return ResponseEntity.ok().build();
-    }
 }
