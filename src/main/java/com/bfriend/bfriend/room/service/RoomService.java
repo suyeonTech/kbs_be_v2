@@ -8,6 +8,7 @@ import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
 import com.bfriend.bfriend.roomptc.service.RoomPtcService;
@@ -64,6 +65,12 @@ public class RoomService {
                 .build();
 
         roomRepository.save(room); //DB에 저장
+
+        ParticipateRoomDTO participateRoomDTO = ParticipateRoomDTO.builder()
+                .room(room)
+                .user(user)
+                .build();
+        roomPtcService.userParticipateRoom(participateRoomDTO);
         return room; //room객체 반환
     }
 
@@ -88,6 +95,9 @@ public class RoomService {
 
         }
 
+        List<RoomPtc> ptcList = roomPtcRopository.findByRid(room);
+        roomPtcRopository.deleteAll(ptcList);
+
         roomRepository.delete(room);
 
         boolean exists = roomRepository.existsById(rid);
@@ -95,7 +105,7 @@ public class RoomService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("모임방 삭제 실패");
         }
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 삭제 성공 (204 No Content)
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     public boolean isUserRoomMaster(Users user, Room room) {

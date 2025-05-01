@@ -6,6 +6,7 @@ import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.roomptc.service.RoomPtcService;
 import com.bfriend.bfriend.room.service.RoomService;
 import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.repository.UsersRepository;
