@@ -1,6 +1,7 @@
 package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
+import com.bfriend.bfriend.utils.ResponseDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class MailService {
     }
 
     @Async
-    public CompletableFuture<ResponseEntity<String>> sendMail(String email) {
+    public CompletableFuture<ResponseEntity<ResponseDTO>> sendMail(String email) {
         String authenticationNumber = mailAuthenticationNumberService.create();
         MimeMessage mimeMessage = createMail(email, authenticationNumber);
 
@@ -52,7 +53,7 @@ public class MailService {
         mailAuthenticationNumberService.saveToRedis(email, authenticationNumber);
 
         return CompletableFuture.supplyAsync(() -> {
-            return ResponseEntity.ok("이메일 인증 번호 발송 성공");
+            return ResponseEntity.ok(ResponseDTO.builder().message("이메일 인증 번호 발송 성공").build());
         });
     }
 

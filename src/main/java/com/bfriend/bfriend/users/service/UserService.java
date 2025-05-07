@@ -2,6 +2,7 @@ package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
+import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -74,7 +75,7 @@ public class UserService {
         usersRepository.save(updatePasswordUsers);
     }
       
-    public CompletableFuture<ResponseEntity<String>> checkEmail(CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<ResponseDTO>> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, request.getEmail()));
 
