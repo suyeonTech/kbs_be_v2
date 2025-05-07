@@ -21,6 +21,7 @@ import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -33,10 +34,9 @@ public class UserService {
     public ResponseEntity<ResponseDTO> changePassword(ChangePasswordRequest request) {
 
         // 비밀번호 양식이 맞지 않는 경우
-        String validationNewPassword = checkPasswordFormat(request.getNewPassword());
-        if (!validationNewPassword.equals("success")) {
-            return ResponseEntity.badRequest()
-                    .body(ResponseDTO.builder().message(validationNewPassword).build());
+        Optional<ErrorCode> validationNewPassword = checkPasswordFormat(request.getNewPassword());
+        if (validationNewPassword.isPresent()) {
+            throw new NotFoundException(validationNewPassword.get(), request.getNewPassword());
         }
 
         String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
@@ -46,7 +46,7 @@ public class UserService {
         return ResponseEntity.ok(ResponseDTO.builder().message("비밀번호 변경 성공").build());
     }
 
-    public String checkPasswordFormat(String newPassword) {
+    public Optional<ErrorCode> checkPasswordFormat(String newPassword) {
         int passwordMinLength = (int) PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
         int passwordMaxLength = (int) PasswordCheckConstant.PASSWORD_MAX_LENGTH.getValue();
         String passwordRegex = (String) PasswordCheckConstant.PASSWORD_REGEX.getValue();
@@ -54,18 +54,18 @@ public class UserService {
         // 공백이 포함된 비밀번호 검사
         String temp = StringUtils.trimAllWhitespace(newPassword);
         if (newPassword.length() != temp.length()) {
-            return "비밀번호 설정 시 공백은 허용되지 않습니다.";
+            return Optional.of(ErrorCode.PASSWORD_WHITESPACE_NOT_ALLOWED);
         }
 
         if (newPassword.length() < passwordMinLength || newPassword.length() > passwordMaxLength) {
-            return "비밀번호 길이 양식을 지켜주세요.";
+            return Optional.of(ErrorCode.PASSWORD_LENGTH_OUT_OF_RANGE);
         }
 
         if (!newPassword.matches(passwordRegex)) {
-            return "특수문자를 포함해야 합니다.";
+            return Optional.of(ErrorCode.PASSWORD_SPECIAL_CHAR_REQUIRED);
         }
 
-        return "success";
+        return Optional.empty();
     }
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {

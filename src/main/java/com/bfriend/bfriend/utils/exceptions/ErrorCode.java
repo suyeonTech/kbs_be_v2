@@ -28,7 +28,11 @@ public enum ErrorCode {
 
     USERS_EMAILNOTFOUND(BAD_REQUEST, "USERS_004", "존재하지 않는 이메일입니다."),
     USERS_AUTHENTICIATIONNUMBERNOTFOUND(BAD_REQUEST, "USERS_005", "이메일 인증 번호가 맞지 않습니다."),
-    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_006", "존재하지 않는 사용자 ID입니다."),;
+    USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_006", "존재하지 않는 사용자 ID입니다."),
+
+    PASSWORD_WHITESPACE_NOT_ALLOWED(BAD_REQUEST, "PASSWORD_001", "비밀번호 설정 시 공백은 허용되지 않습니다."),
+    PASSWORD_LENGTH_OUT_OF_RANGE(BAD_REQUEST, "PASSWORD_002", "비밀번호 길이는 8~20자 사이여야 합니다."),
+    PASSWORD_SPECIAL_CHAR_REQUIRED(BAD_REQUEST, "PASSWORD_003", "비밀번호에는 특수문자가 포함되어야 합니다.");
 
     private final HttpStatus status;
     private final String code;
