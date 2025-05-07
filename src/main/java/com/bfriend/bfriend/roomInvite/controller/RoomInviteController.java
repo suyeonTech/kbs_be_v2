@@ -1,13 +1,16 @@
 package com.bfriend.bfriend.roomInvite.controller;
 
 import com.bfriend.bfriend.roomInvite.dto.request.RoomInviteRequestDTO;
+import com.bfriend.bfriend.roomInvite.dto.response.RoomInviteResponseDTO;
 import com.bfriend.bfriend.roomInvite.service.RoomInviteService;
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/invite")
@@ -27,9 +30,16 @@ public class RoomInviteController {
 
     // 초대 수락
     @PostMapping("/accept/{inviteId}")
-    public ResponseEntity<SuccessResponse> accept(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails userDetails){
-        roomInviteService.acceptInvite(inviteId, userDetails.getUserEntity());
+    public ResponseEntity<SuccessResponse> accept(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails user){
+        roomInviteService.acceptInvite(inviteId, user.getUserEntity());
 
         return ResponseEntity.ok(new SuccessResponse(200, "초대 수락 완료0"));
+    }
+
+    // 초대 목록 조회
+    @GetMapping("/me")
+    public ResponseEntity<SuccessResponse> getMyInvites(@AuthenticationPrincipal CustomUserDetails user) {
+        List<RoomInviteResponseDTO> result = roomInviteService.getMyInvites(user);
+        return ResponseEntity.ok(new SuccessResponse(200, "초대 목록 조회 성공", result));
     }
 }

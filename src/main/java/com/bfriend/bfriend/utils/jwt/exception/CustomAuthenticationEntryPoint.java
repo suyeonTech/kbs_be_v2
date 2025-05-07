@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.security.exception;
+package com.bfriend.bfriend.utils.jwt.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

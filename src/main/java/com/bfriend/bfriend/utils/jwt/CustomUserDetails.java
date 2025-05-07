@@ -1,8 +1,6 @@
-package com.bfriend.bfriend.security;
+package com.bfriend.bfriend.utils.jwt;
 
 import com.bfriend.bfriend.users.entity.Users;
-import lombok.Generated;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -3,6 +3,7 @@ package com.bfriend.bfriend.roomInvite.service;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomInvite.dto.request.RoomInviteRequestDTO;
+import com.bfriend.bfriend.roomInvite.dto.response.RoomInviteResponseDTO;
 import com.bfriend.bfriend.roomInvite.entity.RoomInvite;
 import com.bfriend.bfriend.roomInvite.repository.RoomInviteRepository;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
@@ -12,9 +13,13 @@ import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.enums.InviteStatus;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +71,23 @@ public class RoomInviteService {
                 .uid(user)
                 .build()
         );
+    }
+
+    public List<RoomInviteResponseDTO> getMyInvites(CustomUserDetails userDetails){
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        List<RoomInvite> invites = roomInviteRepository.findByInviteeIdUidAndInvStatus(user.getUid(), InviteStatus.PENDING);
+
+        return invites.stream()
+                .map(invite -> {
+                    RoomInviteResponseDTO dto = new RoomInviteResponseDTO();
+                    dto.setInviterId(invite.getInviterId().getUid());
+                    dto.setAccepted(invite.getInvStatus() == InviteStatus.ACCEPTED);
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }

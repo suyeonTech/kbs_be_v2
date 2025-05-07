@@ -9,10 +9,10 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SuccessResponse {
+public class SuccessResponse<T> {
     private int status;
     private String message;
-    private Map<String, Object> data;
+    private T data;
 
     // 반환 데이터가 없는 경우
     public SuccessResponse(int status, String message) {

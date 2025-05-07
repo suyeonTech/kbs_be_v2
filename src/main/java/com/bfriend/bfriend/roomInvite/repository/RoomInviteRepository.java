@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RoomInviteRepository extends JpaRepository<RoomInvite, Long> {
     boolean existsByRoomAndInviteeId(Room room, Users invitee);
 
-    List<RoomInvite> findByInviteeIdAndInvStatus(Users invitee, InviteStatus status);
+    List<RoomInvite> findByInviteeIdUidAndInvStatus(Long inviteeId, InviteStatus status);
 
     Optional<RoomInvite> findByIdAndInviteeId(Long id, Users invitee);
 }

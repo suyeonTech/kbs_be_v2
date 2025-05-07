@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.users.service;
 
-import com.bfriend.bfriend.security.JWTUtil;
+import com.bfriend.bfriend.utils.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
