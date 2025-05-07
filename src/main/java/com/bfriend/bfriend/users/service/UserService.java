@@ -30,19 +30,23 @@ public class UserService {
     private final UsersRepository usersRepository;
     private final MailService mailService;
 
-    public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
-        if (!isValidPasswordFormat(request.getNewPassword())) {
-            throw new IllegalArgumentException();
+    public ResponseEntity<ResponseDTO> changePassword(ChangePasswordRequest request) {
+
+        // 비밀번호 양식이 맞지 않는 경우
+        String validationNewPassword = checkPasswordFormat(request.getNewPassword());
+        if (!validationNewPassword.equals("success")) {
+            return ResponseEntity.badRequest()
+                    .body(ResponseDTO.builder().message(validationNewPassword).build());
         }
 
         String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
 
         saveHashedNewPassword(request.getEmail(), hashedNewPassword);
 
-        return ResponseEntity.ok("비밀번호 변경 성공");
+        return ResponseEntity.ok(ResponseDTO.builder().message("비밀번호 변경 성공").build());
     }
 
-    public boolean isValidPasswordFormat(String newPassword) {
+    public String checkPasswordFormat(String newPassword) {
         int passwordMinLength = (int) PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
         int passwordMaxLength = (int) PasswordCheckConstant.PASSWORD_MAX_LENGTH.getValue();
         String passwordRegex = (String) PasswordCheckConstant.PASSWORD_REGEX.getValue();
@@ -50,18 +54,18 @@ public class UserService {
         // 공백이 포함된 비밀번호 검사
         String temp = StringUtils.trimAllWhitespace(newPassword);
         if (newPassword.length() != temp.length()) {
-            return false;
+            return "비밀번호 설정 시 공백은 허용되지 않습니다.";
         }
 
         if (newPassword.length() < passwordMinLength || newPassword.length() > passwordMaxLength) {
-            return false;
+            return "비밀번호 길이 양식을 지켜주세요.";
         }
 
         if (!newPassword.matches(passwordRegex)) {
-            return false;
+            return "특수문자를 포함해야 합니다.";
         }
 
-        return true;
+        return "success";
     }
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {

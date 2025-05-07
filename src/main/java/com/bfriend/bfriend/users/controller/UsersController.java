@@ -21,7 +21,7 @@ public class UsersController {
     private final UserService userService;
 
     @PostMapping("/changepw")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordRequest request) {
         return userService.changePassword(request);
     }
 
