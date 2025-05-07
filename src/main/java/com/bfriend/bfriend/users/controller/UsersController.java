@@ -31,7 +31,7 @@ public class UsersController {
     }
 
     @PostMapping("/findpw")
-    public ResponseEntity<String> checkAuthenticationNumber(@RequestBody CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(@RequestBody CheckAuthenticationNumberRequest request) {
         return userService.checkAuthenticationNumber(request);
     }
 

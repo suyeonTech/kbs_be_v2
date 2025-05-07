@@ -57,7 +57,7 @@ public class MailService {
         });
     }
 
-    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
         return mailAuthenticationNumberService.checkAuthenticationNumber(request);
     }
 }

@@ -1,5 +1,6 @@
 package com.bfriend.bfriend.users.service;
 
+import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
@@ -38,7 +39,7 @@ public class MailAuthenticationNumberService {
                 emailAuthenticationNumberTTL, TimeUnit.SECONDS);
     }
 
-    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
         String authenticationNumber = (String) redisTemplate.opsForValue().get(emailAuthenticationNumberNamespace + request.getEmail());
 
         if (authenticationNumber == null || !authenticationNumber.equals(request.getAuthenticationNumber())) {
@@ -47,7 +48,7 @@ public class MailAuthenticationNumberService {
 
         deleteToRedis(request.getEmail());
 
-        return ResponseEntity.ok("이메일 인증 번호 인증 성공");
+        return ResponseEntity.ok(ResponseDTO.builder().message("이메일 인증 번호 인증 성공").build());
     }
 
     public void deleteToRedis(String verifiedEmail) {

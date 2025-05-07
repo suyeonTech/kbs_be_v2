@@ -82,7 +82,9 @@ public class UserService {
         return mailService.sendMail(users.getEmail());
     }
 
-    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        Users users = usersRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, request.getEmail()));
         return mailService.checkAuthenticationNumber(request);
     }
 
