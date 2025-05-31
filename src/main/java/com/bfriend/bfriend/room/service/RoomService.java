@@ -138,9 +138,9 @@ public class RoomService {
     }
 
     //나와 관련된 방 상세보기
-    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId) {
-        Users master = usersRepository.findByUid(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(CustomUserDetails userDetails) {
+        String email = userDetails.getUsername();
+        Users master = usersRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
         List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
         log.debug("내가 만든 모임방 : {}", createdRooms.size());
