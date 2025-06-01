@@ -1,7 +1,7 @@
 package com.bfriend.bfriend.friendlist;
 
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
-import com.bfriend.bfriend.friendlist.dto.request.UserIdRequest;
+import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
 import com.bfriend.bfriend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +26,10 @@ public class FriendListContoller {
     @GetMapping("/list")
     public ResponseEntity<List<FriendsListResponse>> showFriendsList(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return friendListService.showFriendsList(customUserDetails);
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<List<FriendProfileResponse>> showFriendProfile(@RequestParam("uid") Long friendUid) {
+        return friendListService.showFriendProfile(friendUid);
     }
 }
