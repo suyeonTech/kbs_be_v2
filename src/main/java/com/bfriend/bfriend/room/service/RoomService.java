@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
 
@@ -148,7 +150,19 @@ public class RoomService {
 
         List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
         log.debug("내가 참여한 모임방 : {}", joinedRooms.size());
-        List<MyRoomDTO> joinedDTOs = toRoomDTOs(joinedRooms);
+
+        // 중복 제거: 내가 만든 방의 ID를 Set으로 만들어서 필터링
+        Set<Long> createdRoomIds = createdRooms.stream()
+                .map(Room::getRid) // Room 엔티티의 고유 ID 필드 이름에 맞게 수정
+                .collect(Collectors.toSet());
+
+        List<Room> filteredJoinedRooms = joinedRooms.stream()
+                .filter(room -> !createdRoomIds.contains(room.getRid()))
+                .collect(Collectors.toList());
+
+        log.debug("내가 참여한 모임방(중복 제외) : {}", filteredJoinedRooms.size());
+
+        List<MyRoomDTO> joinedDTOs = toRoomDTOs(filteredJoinedRooms);
 
         return ResponseEntity.ok(
                 MyRoomDetailResponseDTO.builder()
