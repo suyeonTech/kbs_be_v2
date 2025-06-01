@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomInviteRepository extends JpaRepository<RoomInvite, Long> {
-    boolean existsByRoomAndInviteeId(Room room, Users invitee);
+    boolean existsByRoomAndInviteeIdAndInvStatus(Room room, Users inviteeId, InviteStatus status);
 
     List<RoomInvite> findByInviteeIdUidAndInvStatus(Long inviteeId, InviteStatus status);
 

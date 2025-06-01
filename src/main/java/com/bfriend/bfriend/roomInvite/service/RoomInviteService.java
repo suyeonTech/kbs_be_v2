@@ -38,7 +38,7 @@ public class RoomInviteService {
         Room room = roomRepository.findById(dto.getRid())
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
 
-        if (roomInviteRepository.existsByRoomAndInviteeId(room, friend)) {
+        if (roomInviteRepository.existsByRoomAndInviteeIdAndInvStatus(room, friend, InviteStatus.PENDING)) {
             throw new BusinessException(ErrorCode.USERS_DUPLICATED);
         }
 
@@ -89,5 +89,20 @@ public class RoomInviteService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void declineInvite(Long inviteId, CustomUserDetails currentUser){
+        Users user = usersRepository.findByEmail(currentUser.getUsername())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        RoomInvite invite = roomInviteRepository.findByIdAndInviteeId(inviteId, user)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVITE_NOTFOUND_OR_NOT_AUTHORIZED));
+
+        if(invite.getInvStatus() != InviteStatus.PENDING){
+            throw new BusinessException(ErrorCode.INVITE_ALREADY_HANDLED);
+        }
+
+        invite.decline();
     }
 }

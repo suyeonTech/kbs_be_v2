@@ -42,4 +42,10 @@ public class RoomInviteController {
         List<RoomInviteResponseDTO> result = roomInviteService.getMyInvites(user);
         return ResponseEntity.ok(new SuccessResponse(200, "초대 목록 조회 성공", result));
     }
+
+    @PostMapping("/decline/{inviteId}")
+    public ResponseEntity<SuccessResponse> declinetInvite(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails user){
+        roomInviteService.declineInvite(inviteId, user);
+        return ResponseEntity.ok(new SuccessResponse(200, "초대 거절 완료"));
+    }
 }
