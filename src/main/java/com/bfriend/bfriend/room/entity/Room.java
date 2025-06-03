@@ -1,10 +1,12 @@
 package com.bfriend.bfriend.room.entity;
 
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
 import com.bfriend.bfriend.users.entity.Users;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -37,6 +39,9 @@ public class Room {
     private Integer maxPtc;
 
     private Integer joinPtc;
+
+    @OneToMany(mappedBy = "rid", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomPtc> participants;
 
     public void addPtc() {
         this.joinPtc++;
