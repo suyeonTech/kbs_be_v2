@@ -151,9 +151,8 @@ public class RoomService {
         List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
         log.debug("내가 참여한 모임방 : {}", joinedRooms.size());
 
-        // 중복 제거: 내가 만든 방의 ID를 Set으로 만들어서 필터링
         Set<Long> createdRoomIds = createdRooms.stream()
-                .map(Room::getRid) // Room 엔티티의 고유 ID 필드 이름에 맞게 수정
+                .map(Room::getRid)
                 .collect(Collectors.toSet());
 
         List<Room> filteredJoinedRooms = joinedRooms.stream()
