@@ -1,6 +1,7 @@
 package com.bfriend.bfriend.friendlist;
 
 
+import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;
 import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -54,5 +55,11 @@ public class FriendListService {
         }
 
         return ResponseEntity.ok(friendsList);
+    }
+
+    public ResponseEntity<List<FriendProfileResponse>> showFriendProfile (Long friendUid) {
+        List<FriendProfileResponse> friendProfile = usersRepository.findUserProfileByUid(friendUid);
+
+        return ResponseEntity.ok(friendProfile);
     }
 }
