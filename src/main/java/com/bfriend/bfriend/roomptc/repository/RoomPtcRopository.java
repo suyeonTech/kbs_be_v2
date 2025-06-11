@@ -16,7 +16,7 @@ public interface RoomPtcRopository extends JpaRepository<RoomPtc, Long> {
     List<Users> findUsersByRoom(@Param("room") Room room);
 
     @Query("SELECT rp.rid FROM RoomPtc rp WHERE rp.uid.uid = :uid")
-    List findAllByUid(Long uid);
+    List<Room> findAllByUid(Long uid);
 
     boolean existsByRid_RidAndUid_Uid(Long roomId, Long userId);
 

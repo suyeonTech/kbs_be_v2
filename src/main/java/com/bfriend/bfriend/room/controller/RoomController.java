@@ -57,9 +57,9 @@ public class RoomController {
     }
 
     //내 방 상세보기
-    @GetMapping("/myroom/{userId}")
-    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
-        return roomService.getMyRoomDetail(userId);
+    @GetMapping("/myroom")
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return roomService.getMyRoomDetail(userDetails);
     }
 
     //모임촌 보기

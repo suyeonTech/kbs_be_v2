@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
 
@@ -138,9 +140,9 @@ public class RoomService {
     }
 
     //나와 관련된 방 상세보기
-    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(Long userId) {
-        Users master = usersRepository.findByUid(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoomDetail(CustomUserDetails userDetails) {
+        String email = userDetails.getUsername();
+        Users master = usersRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
 
         List<Room> createdRooms = roomRepository.findAllByMasterUid(master.getUid());
         log.debug("내가 만든 모임방 : {}", createdRooms.size());
@@ -148,7 +150,18 @@ public class RoomService {
 
         List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
         log.debug("내가 참여한 모임방 : {}", joinedRooms.size());
-        List<MyRoomDTO> joinedDTOs = toRoomDTOs(joinedRooms);
+
+        Set<Long> createdRoomIds = createdRooms.stream()
+                .map(Room::getRid)
+                .collect(Collectors.toSet());
+
+        List<Room> filteredJoinedRooms = joinedRooms.stream()
+                .filter(room -> !createdRoomIds.contains(room.getRid()))
+                .collect(Collectors.toList());
+
+        log.debug("내가 참여한 모임방(중복 제외) : {}", filteredJoinedRooms.size());
+
+        List<MyRoomDTO> joinedDTOs = toRoomDTOs(filteredJoinedRooms);
 
         return ResponseEntity.ok(
                 MyRoomDetailResponseDTO.builder()
