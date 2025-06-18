@@ -23,8 +23,8 @@ public class RoomInviteController {
     @PostMapping("/send")
     public ResponseEntity<SuccessResponse> send(@RequestBody RoomInviteRequestDTO dto){
         roomInviteService.sendInvite(dto);
-
         SuccessResponse response = new SuccessResponse(200, "초대 전송 완료");
+
         return ResponseEntity.ok(response);
     }
 
@@ -33,19 +33,21 @@ public class RoomInviteController {
     public ResponseEntity<SuccessResponse> accept(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails user){
         roomInviteService.acceptInvite(inviteId, user.getUserEntity());
 
-        return ResponseEntity.ok(new SuccessResponse(200, "초대 수락 완료0"));
+        return ResponseEntity.ok(new SuccessResponse(200, "초대 수락 완료"));
     }
 
     // 초대 목록 조회
-    @GetMapping("/me")
+    @GetMapping("/list")
     public ResponseEntity<SuccessResponse> getMyInvites(@AuthenticationPrincipal CustomUserDetails user) {
         List<RoomInviteResponseDTO> result = roomInviteService.getMyInvites(user);
+
         return ResponseEntity.ok(new SuccessResponse(200, "초대 목록 조회 성공", result));
     }
 
     @PostMapping("/decline/{inviteId}")
-    public ResponseEntity<SuccessResponse> declinetInvite(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails user){
+    public ResponseEntity<SuccessResponse> declineInvite(@PathVariable Long inviteId, @AuthenticationPrincipal CustomUserDetails user){
         roomInviteService.declineInvite(inviteId, user);
+
         return ResponseEntity.ok(new SuccessResponse(200, "초대 거절 완료"));
     }
 }
