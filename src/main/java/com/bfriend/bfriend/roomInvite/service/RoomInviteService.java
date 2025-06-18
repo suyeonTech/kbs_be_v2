@@ -84,7 +84,9 @@ public class RoomInviteService {
         return invites.stream()
                 .map(invite -> {
                     RoomInviteResponseDTO dto = new RoomInviteResponseDTO();
-                    dto.setInviterId(invite.getInviterId().getUid());
+                    dto.setInviteId(invite.getId());
+                    dto.setRoomName(invite.getRoom().getRoomName());
+                    dto.setInviterNickname(invite.getInviterId().getNickname());
                     dto.setAccepted(invite.getInvStatus() == InviteStatus.ACCEPTED);
                     return dto;
                 })
