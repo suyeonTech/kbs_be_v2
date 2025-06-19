@@ -33,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,6 +262,16 @@ public class RoomService {
         roomPtcRepository.deleteByRoomIdAndUserId(user.getUid(), roomId);
 
         return ResponseEntity.ok(ResponseDTO.builder().message("모임방 나가기 성공!").build());
+    }
+
+    @Transactional
+    public void deleteExpiredRooms() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Room> expiredRooms = roomRepository.findByMeetingTimeBefore(now);
+        if (!expiredRooms.isEmpty()) {
+            roomRepository.deleteAll(expiredRooms);
+            log.debug("만료된 날짜로 인해 방 {}개가 삭제되었습니다.", expiredRooms.size());
+        }
     }
 
 }
