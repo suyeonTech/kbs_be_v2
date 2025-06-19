@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.security;
+package com.bfriend.bfriend.utils.jwt;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -3,7 +3,7 @@ package com.bfriend.bfriend.friendlist;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
 import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

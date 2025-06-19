@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.users.controller;
 
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
 import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;

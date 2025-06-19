@@ -2,7 +2,7 @@ package com.bfriend.bfriend.friendlist;
 
 
 import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;

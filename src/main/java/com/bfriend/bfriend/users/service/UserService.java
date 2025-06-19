@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.users.service;
 
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
 import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
@@ -12,7 +12,6 @@ import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.constants.PasswordCheckConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

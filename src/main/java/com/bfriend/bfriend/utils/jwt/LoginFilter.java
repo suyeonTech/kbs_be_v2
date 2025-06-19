@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.security;
+package com.bfriend.bfriend.utils.jwt;
 
 import com.bfriend.bfriend.utils.constants.JWTConstants;
 import com.bfriend.bfriend.utils.exceptions.SuccessResponse;

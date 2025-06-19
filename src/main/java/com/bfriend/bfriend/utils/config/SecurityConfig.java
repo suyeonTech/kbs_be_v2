@@ -1,10 +1,10 @@
 package com.bfriend.bfriend.utils.config;
 
-import com.bfriend.bfriend.security.CustomUserDetailsService;
-import com.bfriend.bfriend.security.JWTFilter;
-import com.bfriend.bfriend.security.JWTUtil;
-import com.bfriend.bfriend.security.LoginFilter;
-import com.bfriend.bfriend.security.exception.CustomAuthenticationEntryPoint;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetailsService;
+import com.bfriend.bfriend.utils.jwt.JWTFilter;
+import com.bfriend.bfriend.utils.jwt.JWTUtil;
+import com.bfriend.bfriend.utils.jwt.LoginFilter;
+import com.bfriend.bfriend.utils.jwt.exception.CustomAuthenticationEntryPoint;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

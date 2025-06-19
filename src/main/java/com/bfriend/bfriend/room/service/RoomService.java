@@ -10,15 +10,21 @@ import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
 import com.bfriend.bfriend.roomptc.service.RoomPtcService;
-import com.bfriend.bfriend.security.CustomUserDetails;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
+import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
+import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
+import com.bfriend.bfriend.roomptc.service.RoomPtcService;
+import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +49,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomPtcService roomPtcService;
     private final UsersRepository usersRepository;
-    private final RoomPtcRopository roomPtcRopository;
+    private final RoomPtcRepository roomPtcRepository;
 
     //모임방 생성
     public Room create(CustomUserDetails userDetails, RoomCreateDTO roomCreateDTO) {
@@ -97,8 +103,8 @@ public class RoomService {
 
         }
 
-        List<RoomPtc> ptcList = roomPtcRopository.findByRid(room);
-        roomPtcRopository.deleteAll(ptcList);
+        List<RoomPtc> ptcList = roomPtcRepository.findByRid(room);
+        roomPtcRepository.deleteAll(ptcList);
 
         roomRepository.delete(room);
 
@@ -148,7 +154,7 @@ public class RoomService {
         log.debug("내가 만든 모임방 : {}", createdRooms.size());
         List<MyRoomDTO> createdDTOs = toRoomDTOs(createdRooms);
 
-        List<Room> joinedRooms = roomPtcRopository.findAllByUid(master.getUid());
+        List<Room> joinedRooms = roomPtcRepository.findAllByUid(master.getUid());
         log.debug("내가 참여한 모임방 : {}", joinedRooms.size());
 
         Set<Long> createdRoomIds = createdRooms.stream()
@@ -191,7 +197,7 @@ public class RoomService {
                     .orElseThrow(() -> new BusinessException(ErrorCode.USERS_EMAILNOTFOUND));
         }
 
-        boolean isParticipating = roomPtcRopository.existsByRid_RidAndUid_Uid(roomId, users.getUid());
+        boolean isParticipating = roomPtcRepository.existsByRid_RidAndUid_Uid(roomId, users.getUid());
         Map<String, Boolean> response = new HashMap<>();
         response.put("isParticipating", isParticipating);
         return ResponseEntity.ok(response);
@@ -209,7 +215,7 @@ public class RoomService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
 
         //방장이거나, 참여한 모임방일 경우
-        if (roomPtcRopository.isParticipating(user.getUid(), roomId)) {
+        if (roomPtcRepository.isParticipating(user.getUid(), roomId)) {
             return ResponseEntity
                     .badRequest()
                     .body(ResponseDTO.builder().message("이미 참여한 모임방입니다.").build());
@@ -226,7 +232,7 @@ public class RoomService {
                 .uid(user)
                 .rid(room)
                 .build();
-        roomPtcRopository.save(roomPtc);
+        roomPtcRepository.save(roomPtc);
 
         room.addPtc();
 
@@ -245,14 +251,14 @@ public class RoomService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
 
         //참여한 적이 없는 경우
-        if(!roomPtcRopository.isParticipating(user.getUid(), roomId)){
+        if(!roomPtcRepository.isParticipating(user.getUid(), roomId)){
             return ResponseEntity
                     .badRequest()
                     .body(ResponseDTO.builder().message("참여한 모임방이 아닙니다.").build());
         }
 
         room.deletePtc();
-        roomPtcRopository.deleteByRoomIdAndUserId(user.getUid(), roomId);
+        roomPtcRepository.deleteByRoomIdAndUserId(user.getUid(), roomId);
 
         return ResponseEntity.ok(ResponseDTO.builder().message("모임방 나가기 성공!").build());
     }

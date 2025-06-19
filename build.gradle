@@ -35,6 +35,7 @@ dependencies {
 
 	implementation 'com.h2database:h2'
 	runtimeOnly 'com.h2database:h2'
+	implementation 'net.bytebuddy:byte-buddy:1.14.11'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'

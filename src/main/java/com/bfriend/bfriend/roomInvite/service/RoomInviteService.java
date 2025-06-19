@@ -1,0 +1,110 @@
+package com.bfriend.bfriend.roomInvite.service;
+
+import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.roomInvite.dto.request.RoomInviteRequestDTO;
+import com.bfriend.bfriend.roomInvite.dto.response.RoomInviteResponseDTO;
+import com.bfriend.bfriend.roomInvite.entity.RoomInvite;
+import com.bfriend.bfriend.roomInvite.repository.RoomInviteRepository;
+import com.bfriend.bfriend.roomptc.entity.RoomPtc;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
+import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.utils.enums.InviteStatus;
+import com.bfriend.bfriend.utils.exceptions.BusinessException;
+import com.bfriend.bfriend.utils.exceptions.ErrorCode;
+import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class RoomInviteService {
+
+    private final RoomInviteRepository roomInviteRepository;
+    private final UsersRepository usersRepository;
+    private final RoomRepository roomRepository;
+    private final RoomPtcRepository roomPtcRepository;
+
+    public void sendInvite(RoomInviteRequestDTO dto){
+        Users inviter = usersRepository.findByUid(dto.getInviterId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+        Users friend = usersRepository.findByUid(dto.getFriendId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+        Room room = roomRepository.findById(dto.getRid())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ROOM_NOTFOUND));
+
+        if (roomInviteRepository.existsByRoomAndInviteeIdAndInvStatus(room, friend, InviteStatus.PENDING)) {
+            throw new BusinessException(ErrorCode.USERS_DUPLICATED);
+        }
+
+        RoomInvite invite = RoomInvite.builder()
+                .room(room)
+                .inviterId(inviter)
+                .inviteeId(friend)
+                .invStatus(InviteStatus.PENDING)
+                .build();
+
+        roomInviteRepository.save(invite);
+    }
+
+    @Transactional
+    public void acceptInvite(Long inviteId, Users currentUser){
+        Users user = usersRepository.findByEmail(currentUser.getEmail())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        RoomInvite invite = roomInviteRepository.findByIdAndInviteeId(inviteId, user)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVITE_NOTFOUND_OR_NOT_AUTHORIZED));
+
+        if (invite.getInvStatus() != InviteStatus.PENDING) {
+            throw new BusinessException(ErrorCode.INVITE_ALREADY_HANDLED);
+        }
+
+        invite.accept();
+
+        roomPtcRepository.save(RoomPtc.builder()
+                .rid(invite.getRoom())
+                .uid(user)
+                .build()
+        );
+    }
+
+    public List<RoomInviteResponseDTO> getMyInvites(CustomUserDetails userDetails){
+        String email = userDetails.getUsername();
+
+        Users user = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        List<RoomInvite> invites = roomInviteRepository.findByInviteeIdUidAndInvStatus(user.getUid(), InviteStatus.PENDING);
+
+        return invites.stream()
+                .map(invite -> {
+                    RoomInviteResponseDTO dto = new RoomInviteResponseDTO();
+                    dto.setInviteId(invite.getId());
+                    dto.setRoomName(invite.getRoom().getRoomName());
+                    dto.setInviterNickname(invite.getInviterId().getNickname());
+                    dto.setAccepted(invite.getInvStatus() == InviteStatus.ACCEPTED);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void declineInvite(Long inviteId, CustomUserDetails currentUser){
+        Users user = usersRepository.findByEmail(currentUser.getUsername())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USERS_UIDNOTFOUND));
+
+        RoomInvite invite = roomInviteRepository.findByIdAndInviteeId(inviteId, user)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVITE_NOTFOUND_OR_NOT_AUTHORIZED));
+
+        if(invite.getInvStatus() != InviteStatus.PENDING){
+            throw new BusinessException(ErrorCode.INVITE_ALREADY_HANDLED);
+        }
+
+        invite.decline();
+    }
+}

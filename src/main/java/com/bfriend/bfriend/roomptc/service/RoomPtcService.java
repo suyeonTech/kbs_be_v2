@@ -2,7 +2,7 @@ package com.bfriend.bfriend.roomptc.service;
 
 import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
 import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRopository;
+import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.room.entity.Room;
@@ -21,13 +21,13 @@ import java.util.List;
 @Log4j2
 public class RoomPtcService {
 
-    private final RoomPtcRopository roomPtcRopository;
+    private final RoomPtcRepository roomPtcRepository;
     private final RoomRepository roomRepository;
 
     public List<Users> getParticipants(Long roomId){
         Room foundRoom  = roomRepository.findById(roomId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.ROOM_NOTFOUND,roomId.toString()));
-        List<Users> participants = roomPtcRopository.findUsersByRoom(foundRoom);
+        List<Users> participants = roomPtcRepository.findUsersByRoom(foundRoom);
 
         //참여자가 없을 경우 로그로 알림
         if (participants.isEmpty()) {
@@ -42,7 +42,7 @@ public class RoomPtcService {
                 .rid(participateRoomDTO.getRoom())
                 .uid(participateRoomDTO.getUser())
                 .build();
-        roomPtcRopository.save(roomPtc);
+        roomPtcRepository.save(roomPtc);
         return ResponseEntity.ok().build();
     }
 

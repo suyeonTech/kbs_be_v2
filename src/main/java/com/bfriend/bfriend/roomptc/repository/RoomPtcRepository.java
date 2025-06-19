@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface RoomPtcRopository extends JpaRepository<RoomPtc, Long> {
+public interface RoomPtcRepository extends JpaRepository<RoomPtc, Long> {
     @Query("SELECT rp.uid FROM RoomPtc rp WHERE rp.rid = :room")
     List<Users> findUsersByRoom(@Param("room") Room room);
 

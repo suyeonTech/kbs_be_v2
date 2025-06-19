@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.security.exception;
+package com.bfriend.bfriend.utils.jwt.exception;
 
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import lombok.Getter;
