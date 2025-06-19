@@ -1,13 +1,15 @@
 package com.bfriend.bfriend.room.controller;
 
-import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
-import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
-import com.bfriend.bfriend.room.service.RoomService;
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
+import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
+import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
 import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
+import com.bfriend.bfriend.roomptc.service.RoomPtcService;
+import com.bfriend.bfriend.room.service.RoomService;
+import com.bfriend.bfriend.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import java.util.Map;
 @Log4j2
 public class RoomController {
     private final RoomService roomService;
+    private final UsersRepository usersRepository;
 
     //모임방 생성
     @PostMapping("/create")
@@ -42,8 +45,7 @@ public class RoomController {
 
     //모임방 삭제
     @PostMapping("/delete")
-    public ResponseEntity<Object> deleteRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody RoomDeleteDTO roomDeleteDTO)
-    {
+    public ResponseEntity<Object> deleteRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody RoomDeleteDTO roomDeleteDTO) {
         return roomService.delete(userDetails, roomDeleteDTO.getRid());
 
     }
@@ -55,9 +57,9 @@ public class RoomController {
     }
 
     //내 방 상세보기
-    @GetMapping("/myroom/{userId}")
-    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@PathVariable Long userId) {
-        return roomService.getMyRoomDetail(userId);
+    @GetMapping("/myroom")
+    public ResponseEntity<MyRoomDetailResponseDTO> getMyRoom(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return roomService.getMyRoomDetail(userDetails);
     }
 
     //모임촌 보기
@@ -66,9 +68,20 @@ public class RoomController {
         return roomService.getVillage();
     }
 
+    @GetMapping("/participation/check")
+    public ResponseEntity<?> checkParticipation(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestParam Long roomId) {
+        return roomService.checkParticipation(customUserDetails, roomId);
+    }
+
     //모임방 참여하기
     @PostMapping("/join/{roomId}")
     public ResponseEntity joinRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
         return roomService.joinRoom(userDetails, roomId);
+    }
+
+    //모임방 나가기
+    @PostMapping("/exit/{roomId}")
+    public ResponseEntity exitRoom(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable Long roomId) {
+        return roomService.exitRoom(userDetails, roomId);
     }
 }

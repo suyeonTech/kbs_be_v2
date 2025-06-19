@@ -1,8 +1,8 @@
 package com.bfriend.bfriend.utils.jwt;
 
+import com.bfriend.bfriend.utils.jwt.exception.CustomAuthenticationException;
 import com.bfriend.bfriend.users.entity.Users;
 import com.bfriend.bfriend.utils.constants.JWTConstants;
-import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,10 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -31,16 +30,16 @@ public class JWTFilter extends OncePerRequestFilter {
 
             String isLogout = redisTemplate.opsForValue().get(token);
             if ("logout".equals(isLogout)) {
-                throw new BusinessException(ErrorCode.LOGOUT_TOKEN_USED);
+                throw new CustomAuthenticationException(ErrorCode.LOGOUT_TOKEN_USED);
             }
-
             Authentication authentication = createAuthenticationFromToken(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException ex) {
-            SecurityContextHolder.clearContext();
-            throw ex;
-        }
 
+        } catch (CustomAuthenticationException ex) {
+            SecurityContextHolder.clearContext();
+            request.setAttribute("CustomAuthException", ex);
+            throw new InsufficientAuthenticationException(ex.getMessage());
+        }
         filterChain.doFilter(request, response);
     }
 
@@ -48,18 +47,18 @@ public class JWTFilter extends OncePerRequestFilter {
         String authorization= request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith(JWTConstants.TOKEN_PREFIX)) {
-            throw new BusinessException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
+            throw new CustomAuthenticationException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
         }
 
-        String[] parts = authorization.split(" ");
-        if (parts.length < 2 || parts[1].trim().isEmpty()) {
-            throw new BusinessException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
+        String[] parts = authorization.split(" ", 2);
+        if (parts.length < 2 || parts[1] == null || parts[1].isBlank()) {
+            throw new CustomAuthenticationException(ErrorCode.AUTHENTICATION_HEADER_MISSING);
         }
 
-        String token = parts[1];
+        String token = parts[1].trim();
 
         if (jwtUtil.isExpired(token)) {
-            throw new AuthenticationServiceException("Token이 만료되었습니다.");
+            throw new CustomAuthenticationException(ErrorCode.TOKEN_EXPIRED);
         }
 
         return token;
@@ -83,13 +82,18 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         System.out.println("Request URI: " + request.getRequestURI());
         return request.getRequestURI().equals("/login")
                 ||request.getRequestURI().equals("/auth/join")
                 ||request.getRequestURI().startsWith("/h2-consoleb")
                 ||request.getRequestURI().equals("/favicon.ico")
+                ||request.getRequestURI().equals("/health")
+                ||request.getRequestURI().equals("/users/checkemail")
+                ||request.getRequestURI().equals("/users/findpw")
+                ||request.getRequestURI().equals("/users/changepw")
                 || request.getRequestURI().equals("/health")
+                ||request.getRequestURI().equals("/room/village")
                 || request.getRequestURI().equals("/users/test"); // ✅프론트 백 연동 테스트
     }
 }

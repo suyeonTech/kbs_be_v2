@@ -6,6 +6,7 @@ import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
+import com.bfriend.bfriend.utils.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,17 +21,17 @@ public class UsersController {
     private final UserService userService;
 
     @PostMapping("/changepw")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<ResponseDTO> changePassword(@RequestBody ChangePasswordRequest request) {
         return userService.changePassword(request);
     }
 
     @PostMapping("/checkemail")
-    public CompletableFuture<ResponseEntity<String>> authenticationEmail(@RequestBody CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<ResponseDTO>> authenticationEmail(@RequestBody CheckEmailRequest request) {
         return userService.checkEmail(request);
     }
 
     @PostMapping("/findpw")
-    public ResponseEntity<String> checkAuthenticationNumber(@RequestBody CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(@RequestBody CheckAuthenticationNumberRequest request) {
         return userService.checkAuthenticationNumber(request);
     }
 

@@ -77,12 +77,13 @@ public class SecurityConfig {
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**", "/health").permitAll()
+                .requestMatchers("/login", "/", "/auth/join", "/h2-consoleb/**", "/health",
+                        "/users/checkemail", "/users/findpw", "users/changepw", "/room/village").permitAll()
                 .requestMatchers("/users/test").permitAll() // ✅프론트 백 연동 테스트
                 .requestMatchers("/admin").hasRole("USER")
                 .anyRequest().authenticated()
         ).exceptionHandling(exception -> exception
-                .authenticationEntryPoint(customAuthenticationEntryPoint) // Custom EntryPoint 등록
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
         );;
 
         http

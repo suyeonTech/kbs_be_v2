@@ -2,6 +2,7 @@ package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
+import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
@@ -17,6 +18,9 @@ import org.springframework.util.StringUtils;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
@@ -26,19 +30,22 @@ public class UserService {
     private final UsersRepository usersRepository;
     private final MailService mailService;
 
-    public ResponseEntity<String> changePassword(ChangePasswordRequest request) {
-        if (!isValidPasswordFormat(request.getNewPassword())) {
-            throw new IllegalArgumentException();
+    public ResponseEntity<ResponseDTO> changePassword(ChangePasswordRequest request) {
+
+        // 비밀번호 양식이 맞지 않는 경우
+        Optional<ErrorCode> validationNewPassword = checkPasswordFormat(request.getNewPassword());
+        if (validationNewPassword.isPresent()) {
+            throw new NotFoundException(validationNewPassword.get(), request.getNewPassword());
         }
 
         String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
 
         saveHashedNewPassword(request.getEmail(), hashedNewPassword);
 
-        return ResponseEntity.ok("비밀번호 변경 성공");
+        return ResponseEntity.ok(ResponseDTO.builder().message("비밀번호 변경 성공").build());
     }
 
-    public boolean isValidPasswordFormat(String newPassword) {
+    public Optional<ErrorCode> checkPasswordFormat(String newPassword) {
         int passwordMinLength = (int) PasswordCheckConstant.PASSWORD_MIN_LENGTH.getValue();
         int passwordMaxLength = (int) PasswordCheckConstant.PASSWORD_MAX_LENGTH.getValue();
         String passwordRegex = (String) PasswordCheckConstant.PASSWORD_REGEX.getValue();
@@ -46,18 +53,18 @@ public class UserService {
         // 공백이 포함된 비밀번호 검사
         String temp = StringUtils.trimAllWhitespace(newPassword);
         if (newPassword.length() != temp.length()) {
-            return false;
+            return Optional.of(ErrorCode.PASSWORD_WHITESPACE_NOT_ALLOWED);
         }
 
         if (newPassword.length() < passwordMinLength || newPassword.length() > passwordMaxLength) {
-            return false;
+            return Optional.of(ErrorCode.PASSWORD_LENGTH_OUT_OF_RANGE);
         }
 
         if (!newPassword.matches(passwordRegex)) {
-            return false;
+            return Optional.of(ErrorCode.PASSWORD_SPECIAL_CHAR_REQUIRED);
         }
 
-        return true;
+        return Optional.empty();
     }
 
     public void saveHashedNewPassword(String email, String hashedNewPassword) {
@@ -71,14 +78,16 @@ public class UserService {
         usersRepository.save(updatePasswordUsers);
     }
       
-    public CompletableFuture<ResponseEntity<String>> checkEmail(CheckEmailRequest request) {
+    public CompletableFuture<ResponseEntity<ResponseDTO>> checkEmail(CheckEmailRequest request) {
         Users users = usersRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, request.getEmail()));
 
         return mailService.sendMail(users.getEmail());
     }
 
-    public ResponseEntity<String> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+    public ResponseEntity<ResponseDTO> checkAuthenticationNumber(CheckAuthenticationNumberRequest request) {
+        usersRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_EMAILNOTFOUND, request.getEmail()));
         return mailService.checkAuthenticationNumber(request);
     }
 

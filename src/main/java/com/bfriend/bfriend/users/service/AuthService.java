@@ -32,5 +32,4 @@ public class AuthService {
         Date expiry = jwtUtil.getExpiration(token);
         return expiry.getTime() - System.currentTimeMillis();
     }
-
 }

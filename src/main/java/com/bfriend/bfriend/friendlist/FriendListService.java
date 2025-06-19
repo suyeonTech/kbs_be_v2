@@ -1,6 +1,8 @@
 package com.bfriend.bfriend.friendlist;
 
 
+import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;
+import com.bfriend.bfriend.security.CustomUserDetails;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.friendlist.dto.request.FriendAddRequest;
@@ -40,16 +42,24 @@ public class FriendListService {
         return ResponseEntity.status(HttpStatus.CREATED).body("친구 추가 성공");
     }
 
-    public ResponseEntity<List<FriendsListResponse>> showFriendsList(Long uid) {
-        Users users = usersRepository.findByUid(uid)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_UIDNOTFOUND, uid.toString()));
+    public ResponseEntity<List<FriendsListResponse>> showFriendsList(CustomUserDetails customUserDetails) {
+        String email = customUserDetails.getUsername();
+
+        Users users = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USERS_UIDNOTFOUND, email));
 
         List<FriendsListResponse> friendsList = friendListRepository.findByAddUid(users);
 
         if(friendsList.isEmpty()) {
-            log.info("사용자 ID {}에 추가된 친구가 없습니다.", uid);
+            log.info("사용자 ID {}에 추가된 친구가 없습니다.", users.getUid());
         }
 
         return ResponseEntity.ok(friendsList);
+    }
+
+    public ResponseEntity<List<FriendProfileResponse>> showFriendProfile (Long friendUid) {
+        List<FriendProfileResponse> friendProfile = usersRepository.findUserProfileByUid(friendUid);
+
+        return ResponseEntity.ok(friendProfile);
     }
 }

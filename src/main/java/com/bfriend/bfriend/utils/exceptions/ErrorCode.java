@@ -30,9 +30,13 @@ public enum ErrorCode {
     USERS_UIDNOTFOUND(BAD_REQUEST, "USERS_003", "존재하지 않는 사용자 ID입니다."),
     USERS_DUPLICATED(BAD_REQUEST, "USERS_004", "이미 초대 된 친구입니다."),
 
+    PASSWORD_WHITESPACE_NOT_ALLOWED(BAD_REQUEST, "PASSWORD_001", "비밀번호 설정 시 공백은 허용되지 않습니다."),
+    PASSWORD_LENGTH_OUT_OF_RANGE(BAD_REQUEST, "PASSWORD_002", "비밀번호 길이는 8~20자 사이여야 합니다."),
+    PASSWORD_SPECIAL_CHAR_REQUIRED(BAD_REQUEST, "PASSWORD_003", "비밀번호에는 특수문자가 포함되어야 합니다."),
+
     // INVITE
     INVITE_NOTFOUND_OR_NOT_AUTHORIZED(BAD_REQUEST, "INVITE_001", "해당 초대가 존재하지 않거나 권한이 없습니다."),
-    INVITE_ALREADY_HANDLED(BAD_REQUEST, "INVITE_002", "이미 처리된 초대입니다."),;
+    INVITE_ALREADY_HANDLED(BAD_REQUEST, "INVITE_002", "이미 처리된 초대입니다.");
 
     private final HttpStatus status;
     private final String code;
