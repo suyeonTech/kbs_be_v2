@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.users.entity;
+package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.utils.enums.Gender;
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
 package com.bfriend.bfriend.friendlist;
 
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 import jakarta.persistence.*;
 import lombok.*;
 

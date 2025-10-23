@@ -1,13 +1,13 @@
-package com.bfriend.bfriend.roomInvite.entity;
+package com.bfriend.bfriend.roomInvite;
 
-import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.room.Room;
 import com.bfriend.bfriend.utils.enums.InviteStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 
 @Entity
 @Getter

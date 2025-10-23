@@ -1,6 +1,5 @@
-package com.bfriend.bfriend.room.repository;
+package com.bfriend.bfriend.room;
 
-import com.bfriend.bfriend.room.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

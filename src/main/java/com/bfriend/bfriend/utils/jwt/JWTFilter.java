@@ -1,7 +1,7 @@
 package com.bfriend.bfriend.utils.jwt;
 
 import com.bfriend.bfriend.utils.jwt.exception.CustomAuthenticationException;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 import com.bfriend.bfriend.utils.constants.JWTConstants;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import jakarta.servlet.FilterChain;

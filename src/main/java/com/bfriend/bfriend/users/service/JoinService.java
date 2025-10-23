@@ -2,8 +2,8 @@ package com.bfriend.bfriend.users.service;
 
 import com.bfriend.bfriend.utils.jwt.JWTUtil;
 import com.bfriend.bfriend.users.dto.request.JoinRequest;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.UsersRepository;
 import com.bfriend.bfriend.utils.constants.JWTConstants;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;

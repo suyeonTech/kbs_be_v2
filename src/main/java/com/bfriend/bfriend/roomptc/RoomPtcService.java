@@ -1,14 +1,12 @@
-package com.bfriend.bfriend.roomptc.service;
+package com.bfriend.bfriend.roomptc;
 
 import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
-import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
-import com.bfriend.bfriend.room.entity.Room;
-import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.room.Room;
+import com.bfriend.bfriend.room.RoomRepository;
 
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,7 @@
-package com.bfriend.bfriend.roomInvite.controller;
+package com.bfriend.bfriend.roomInvite;
 
 import com.bfriend.bfriend.roomInvite.dto.request.RoomInviteRequestDTO;
 import com.bfriend.bfriend.roomInvite.dto.response.RoomInviteResponseDTO;
-import com.bfriend.bfriend.roomInvite.service.RoomInviteService;
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import lombok.RequiredArgsConstructor;

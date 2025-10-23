@@ -1,15 +1,12 @@
-package com.bfriend.bfriend.room.controller;
+package com.bfriend.bfriend.room;
 
 import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.request.RoomDeleteDTO;
 import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
-import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
-import com.bfriend.bfriend.roomptc.service.RoomPtcService;
-import com.bfriend.bfriend.room.service.RoomService;
-import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.bfriend.bfriend.room.service;
+package com.bfriend.bfriend.room;
 
 
 import com.bfriend.bfriend.room.dto.MyRoomDTO;
@@ -6,26 +6,17 @@ import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
 import com.bfriend.bfriend.room.dto.response.MyRoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
 import com.bfriend.bfriend.room.dto.response.VillageResponseDTO;
-import com.bfriend.bfriend.room.entity.Room;
-import com.bfriend.bfriend.room.repository.RoomRepository;
 import com.bfriend.bfriend.roomptc.dto.ParticipateRoomDTO;
-import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
+import com.bfriend.bfriend.roomptc.RoomPtc;
+import com.bfriend.bfriend.roomptc.RoomPtcRepository;
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
-import com.bfriend.bfriend.roomptc.service.RoomPtcService;
-import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.roomptc.RoomPtcService;
+import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.UsersRepository;
 import com.bfriend.bfriend.utils.ResponseDTO;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
-import com.bfriend.bfriend.room.dto.request.RoomCreateDTO;
-import com.bfriend.bfriend.room.dto.response.RoomDetailResponseDTO;
-import com.bfriend.bfriend.roomptc.service.RoomPtcService;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.utils.exceptions.SuccessResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.bfriend.bfriend.room.mapper.RoomMapper.*;
+import static com.bfriend.bfriend.room.RoomMapper.*;
 
 @RequiredArgsConstructor
 @Service

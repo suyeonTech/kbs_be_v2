@@ -1,15 +1,13 @@
-package com.bfriend.bfriend.roomInvite.service;
+package com.bfriend.bfriend.roomInvite;
 
-import com.bfriend.bfriend.room.entity.Room;
-import com.bfriend.bfriend.room.repository.RoomRepository;
+import com.bfriend.bfriend.room.Room;
+import com.bfriend.bfriend.room.RoomRepository;
 import com.bfriend.bfriend.roomInvite.dto.request.RoomInviteRequestDTO;
 import com.bfriend.bfriend.roomInvite.dto.response.RoomInviteResponseDTO;
-import com.bfriend.bfriend.roomInvite.entity.RoomInvite;
-import com.bfriend.bfriend.roomInvite.repository.RoomInviteRepository;
-import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.roomptc.repository.RoomPtcRepository;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.roomptc.RoomPtc;
+import com.bfriend.bfriend.roomptc.RoomPtcRepository;
+import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.UsersRepository;
 import com.bfriend.bfriend.utils.enums.InviteStatus;
 import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;

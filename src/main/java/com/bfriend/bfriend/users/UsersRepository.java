@@ -1,6 +1,5 @@
-package com.bfriend.bfriend.users.repository;
+package com.bfriend.bfriend.users;
 
-import com.bfriend.bfriend.users.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.bfriend.bfriend.friendlist.dto.response.FriendProfileResponse;

@@ -1,9 +1,8 @@
-package com.bfriend.bfriend.room.mapper;
+package com.bfriend.bfriend.room;
 
 import com.bfriend.bfriend.room.dto.MyRoomDTO;
-import com.bfriend.bfriend.room.entity.Room;
 import com.bfriend.bfriend.users.dto.UserDTO;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 
 import java.util.List;
 import java.util.stream.Collectors;

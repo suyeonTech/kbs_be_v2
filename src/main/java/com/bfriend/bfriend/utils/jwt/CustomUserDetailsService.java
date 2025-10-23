@@ -1,8 +1,8 @@
 package com.bfriend.bfriend.utils.jwt;
 
 
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
+import com.bfriend.bfriend.users.Users;
+import com.bfriend.bfriend.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

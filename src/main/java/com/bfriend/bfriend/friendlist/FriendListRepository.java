@@ -1,7 +1,7 @@
 package com.bfriend.bfriend.friendlist;
 
 import com.bfriend.bfriend.friendlist.dto.response.FriendsListResponse;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

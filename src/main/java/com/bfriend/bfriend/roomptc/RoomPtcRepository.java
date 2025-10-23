@@ -1,9 +1,8 @@
-package com.bfriend.bfriend.roomptc.repository;
+package com.bfriend.bfriend.roomptc;
 
-import com.bfriend.bfriend.room.entity.Room;
+import com.bfriend.bfriend.room.Room;
 
-import com.bfriend.bfriend.roomptc.entity.RoomPtc;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.users.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

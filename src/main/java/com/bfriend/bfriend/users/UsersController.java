@@ -1,8 +1,7 @@
-package com.bfriend.bfriend.users.controller;
+package com.bfriend.bfriend.users;
 
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
-import com.bfriend.bfriend.users.service.UserService;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;

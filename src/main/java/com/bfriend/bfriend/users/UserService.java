@@ -1,5 +1,6 @@
-package com.bfriend.bfriend.users.service;
+package com.bfriend.bfriend.users;
 
+import com.bfriend.bfriend.users.service.MailService;
 import com.bfriend.bfriend.utils.jwt.CustomUserDetails;
 import com.bfriend.bfriend.users.dto.response.UserDetailResponse;
 import com.bfriend.bfriend.utils.ResponseDTO;
@@ -7,8 +8,6 @@ import com.bfriend.bfriend.utils.exceptions.BusinessException;
 import com.bfriend.bfriend.utils.exceptions.ErrorCode;
 import com.bfriend.bfriend.utils.exceptions.NotFoundException;
 import com.bfriend.bfriend.users.dto.request.ChangePasswordRequest;
-import com.bfriend.bfriend.users.entity.Users;
-import com.bfriend.bfriend.users.repository.UsersRepository;
 import com.bfriend.bfriend.utils.constants.PasswordCheckConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +17,6 @@ import org.springframework.util.StringUtils;
 import com.bfriend.bfriend.users.dto.request.CheckAuthenticationNumberRequest;
 import com.bfriend.bfriend.users.dto.request.CheckEmailRequest;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 

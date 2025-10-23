@@ -1,8 +1,7 @@
-package com.bfriend.bfriend.roomInvite.repository;
+package com.bfriend.bfriend.roomInvite;
 
-import com.bfriend.bfriend.room.entity.Room;
-import com.bfriend.bfriend.roomInvite.entity.RoomInvite;
-import com.bfriend.bfriend.users.entity.Users;
+import com.bfriend.bfriend.room.Room;
+import com.bfriend.bfriend.users.Users;
 import com.bfriend.bfriend.utils.enums.InviteStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
